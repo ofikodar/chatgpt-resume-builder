@@ -1,0 +1,120 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    background: linear-gradient(to bottom, #567189, #7B8FA1);
+    color: #fff;
+    padding: 2em;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+}
+
+h2 {
+    font-size: 2em;
+    margin-bottom: 0.5em;
+}
+
+.personal-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2em;
+}
+
+.personal-info img {
+    width: 150px;
+    border-radius: 50%;
+    margin-right: 2em;
+}
+
+.personal-info h1 {
+    margin-bottom: 0;
+}
+
+.personal-info p {
+    margin-bottom: 0;
+    font-size: 1.2em;
+}
+
+.summary {
+    border-left: 5px solid #CFB997;
+    padding-left: 1em;
+    margin-bottom: 2em;
+}
+
+.summary h2 {
+    margin-bottom: 0.5em;
+}
+
+.summary p {
+    font-size: 1.2em;
+    margin-bottom: 0;
+}
+
+.work-experience {
+    margin-bottom: 2em;
+}
+
+.work-experience h2 {
+    margin-bottom: 1em;
+}
+
+.work-experience .job {
+    margin-bottom: 1em;
+}
+
+.work-experience .job h3 {
+    margin-bottom: 0.5em;
+}
+
+.work-experience .job p {
+    margin-bottom: 0;
+    font-size: 1.2em;
+}
+
+.education {
+    margin-bottom: 2em;
+}
+
+.education h2 {
+    margin-bottom: 1em;
+}
+
+.education .degree {
+    margin-bottom: 1em;
+}
+
+.education .degree h3 {
+    margin-bottom: 0.5em;
+}
+
+.education .degree p {
+    margin-bottom: 0;
+    font-size: 1.2em;
+}
+
+.skills {
+    margin-bottom: 2em;
+}
+
+.skills h2 {
+    margin-bottom: 1em;
+}
+
+.skills ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
