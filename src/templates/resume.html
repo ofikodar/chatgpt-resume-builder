@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Resume</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+<div class="personal-info">
+    <h1>{{ name }}</h1>
+    <h2>{{ address }}</h2>
+    <h2>{{ phone }}</h2>
+    <h2>{{ email }}</h2>
+</div>
+
+<div class="summary">
+    <h1>Summary</h1>
+    <p>{{ summary }}</p>
+</div>
+
+<div class="work-experience">
+    <h1>Work Experience</h1>
+    {% for job in work_experience %}
+    <h2>{{ job.title }} at {{ job.company }}</h2>
+    <h3>{{ job.dates }}</h3>
+    <p>{{ job.description }}</p>
+    {% endfor %}
+</div>
+
+<div class="education">
+    <h1>Education</h1>
+    {% for edu in education %}
+    <h2>{{ edu.degree }} from {{ edu.school }}</h2>
+    <h3>{{ edu.dates }}</h3>
+    {% endfor %}
+</div>
+
+<div class="skills">
+    <h1>Skills</h1>
+    <ul>
+    {% for skill in skills %}
+        <div> {{ skill }} </div>
+    {% endfor %}
+    </ul>
+</div>
+    </body>
+</html>
