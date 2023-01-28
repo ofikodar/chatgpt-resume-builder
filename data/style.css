@@ -1,0 +1,185 @@
+
+
+
+
+@page {
+  size: A4 portrait;
+
+}
+@media print {
+  header, footer {
+    display: none;
+  }
+}
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+ }
+
+html
+{
+
+	font-size:100%;
+}
+
+
+body
+{
+    top: 0px;
+	-webkit-font-smoothing:antialiased;
+	font-family:Lora, serif;
+	font-size:14.5px;
+	font-weight:500;
+	line-height:1.4;
+	text-rendering:optimizeLegibility;
+}
+
+.parent
+{
+}
+
+.skill-set li:hover
+{
+	background:#3498db;
+}
+
+h1
+{
+	color:rgba(0,0,0,1);
+}
+
+.wrapper
+{
+	height:100%;
+}
+
+
+
+
+.left
+{
+
+left: 0px;
+	height:100%;
+	margin-left:-1px;
+	min-width:256px;
+	width:70%;
+    float:left;
+}
+
+.right
+{
+right: 0px;
+position: absolute;
+	text-align:center;
+	background-color:rgba(0,0,0,.025);
+	border-left:1px solid rgba(0,0,0,.05);
+
+	height:100%;
+	width:30%;
+	padding-left: 30px;
+  padding-top: 70px;
+
+}
+
+
+
+.name-hero
+{
+	background:rgba(0,0,0,.001);
+
+	width:85%;
+}
+
+
+.name-hero h1
+{
+	font-family:Open Sans, sans-serif;
+	font-size:1.5em;
+	text-align:center;
+}
+
+.name-hero h2
+{
+	font-family:Open Sans, sans-serif;
+	font-size:1.5em;
+	text-align:center;
+}
+
+.name-hero h3
+{
+	font-family:Open Sans, sans-serif;
+	font-size:1.5em;
+	text-align:center;
+	margin:0px auto;
+}
+
+.name-hero h1 em
+{
+	color:rgba(0,0,0,1);
+	font-style:normal;
+	font-weight:700;
+}
+
+.name-hero p
+{
+	color:rgba(0,0,0,1);
+	font-size:.75em;
+	line-height:1.5;
+	margin:0 8px 0 0;
+	text-align:center;
+}
+
+.name-hero .name-text
+{
+    font-size:1.5em;
+	margin:0 auto;
+
+	width:85%;
+}
+
+.inner
+{
+	margin:0 auto;
+	max-width:975px;
+	padding:0em;
+}
+
+.inner h1
+{
+	font-size:1.75em;
+}
+
+.inner p
+{
+	color:rgba(0,0,0,1);
+}
+
+.inner p em
+{
+	color:rgba(0,0,0,1);
+	font-style:normal;
+}
+
+.inner section
+{
+	margin:1px auto;
+}
+
+ul
+{
+	list-style-type:none;
+	margin-top:0 px;
+	max-width:570px;
+	padding:1;
+}
+
+.skill-set
+{
+
+	color:rgba(0,0,0,1);
+	list-style:none;
+	margin:1px 1px 0 0;
+	padding:10px;
+	text-align:justify;
+}
+
