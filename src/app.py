@@ -1,5 +1,5 @@
-import os
 import argparse
+import os
 
 from src.chatbot.chatgpt import Chatgpt
 from src.utils import parse_pdf, export_html_resume
@@ -20,7 +20,7 @@ def improve_resume(args):
     chatbot = Chatgpt(args.config_path)
     new_resume_data = chatbot.improve_resume(parsed_resume)
 
-    output_path = os.path.join(args.data_dir, args.output_file)
+    output_path = os.path.join(args.data_dir, args.output_resume)
     export_html_resume(new_resume_data, output_path)
 
 
@@ -36,7 +36,6 @@ def main():
     parser.add_argument("--output_resume", type=str, default='new_resume.html', help="Name of output resume file")
 
     args = parser.parse_args()
-
     try:
         improve_resume(args)
     except Exception as e:

@@ -1,4 +1,3 @@
-
 import PyPDF2
 from jinja2 import FileSystemLoader, Environment
 
@@ -27,4 +26,3 @@ def export_html_resume(data, output_path):
     html_output = template.render(data)
     with open(output_path, 'w', encoding='utf8') as f:
         f.write(html_output)
-
