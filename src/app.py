@@ -70,8 +70,7 @@ def parse_pdf(pdf_file):
     return pdf_text
 
 def _build_resume():
-    from reportlab.lib.pagesizes import letter
-    from reportlab.platypus import SimpleDocTemplate, HTML
+
 
     with open('data.json', 'r') as f:
        data=  json.load( f)

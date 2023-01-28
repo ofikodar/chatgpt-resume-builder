@@ -1,4 +1,5 @@
 
+
 *, *:before, *:after {
   -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
  }
@@ -156,15 +157,5 @@ ul
 	margin:15px 15px 0 0;
 	padding:10px;
 	text-align:justify;
-}
-
-
-
-.clearfix:after {
-   content: " "; /* Older browser do not support empty content */
-   visibility: hidden;
-   display: block;
-   height: 0;
-   clear: both;
 }
 
