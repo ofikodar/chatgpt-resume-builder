@@ -2,7 +2,9 @@ import ast
 import json
 
 import PyPDF2
+import pdfkit
 from jinja2 import FileSystemLoader, Environment
+from reportlab.platypus import SimpleDocTemplate
 from revChatGPT.ChatGPT import Chatbot
 
 OUTPUT_FILE = 'output.html'
@@ -10,8 +12,9 @@ EXAMPLE_RESUME = r'C:\Users\ofiko\Downloads\ResumeParser-master\ResumeParser-mas
 
 DATA_FORMAT = {
     'name': '',
-    'address': '',
-    'phone': '',
+    'title': '',
+    'linkedin': '',
+    'github': '',
     'email': '',
     'summary': '',
     'work_experience': [
@@ -19,7 +22,7 @@ DATA_FORMAT = {
         {'title': '', 'company': '', 'dates': '', 'description': ''},
     ],
     'education': [
-        {'degree': '', 'school': '', 'dates': ''},
+        {'degree': '', 'school': '', 'dates': '', 'description': ''},
     ],
     'skills': ['', '', '']
 }
@@ -66,6 +69,13 @@ def parse_pdf(pdf_file):
     pdf_text = '\n'.join(pdf_text)
     return pdf_text
 
+def _build_resume():
+    from reportlab.lib.pagesizes import letter
+    from reportlab.platypus import SimpleDocTemplate, HTML
+
+    with open('data.json', 'r') as f:
+       data=  json.load( f)
+    create_resume_html(data)
 
 def _main():
     chatbot = Chatgpt()
@@ -80,11 +90,12 @@ def create_resume_html(data):
     env = Environment(loader=FileSystemLoader('templates'))
     template = env.get_template('resume.html')
     output = template.render(data)
-    with open(OUTPUT_FILE, 'w') as f:
+    with open(OUTPUT_FILE, 'w', encoding='utf8') as f:
         f.write(output)
     with open('data.json', 'w') as f:
         json.dump(data, f)
 
 
 if __name__ == '__main__':
-    _main()
+    _build_resume()
+    # _main()

@@ -1,46 +1,56 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Resume</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
-    <body>
-<div class="personal-info">
-    <h1>{{ name }}</h1>
-    <h2>{{ address }}</h2>
-    <h2>{{ phone }}</h2>
-    <h2>{{ email }}</h2>
-</div>
+<link href='style.css' rel='stylesheet' type='text/css'>
+<div class="wrapper clearfix">
+    <div class="left">
+        <div class="inner">
+            <div class="name-hero">
+                <div class="name-text">
+                    <h1>{{name}} </h1>
+                </div>
+                    <h3>{{title}} </h3>
 
-<div class="summary">
-    <h1>Summary</h1>
-    <p>{{ summary }}</p>
-</div>
+            </div>
 
-<div class="work-experience">
-    <h1>Work Experience</h1>
-    {% for job in work_experience %}
-    <h2>{{ job.title }} at {{ job.company }}</h2>
-    <h3>{{ job.dates }}</h3>
-    <p>{{ job.description }}</p>
-    {% endfor %}
-</div>
 
-<div class="education">
-    <h1>Education</h1>
-    {% for edu in education %}
-    <h2>{{ edu.degree }} from {{ edu.school }}</h2>
-    <h3>{{ edu.dates }}</h3>
-    {% endfor %}
-</div>
+            <div class="summary">
+                <h1>Summary</h1>
+                <p>{{summary}}</p>
+            </div>
+            <section>
+                <h1>Employment</h1>
+                {% for experience in work_experience %}
+                <p><em>{{experience.dates}} | {{experience.company}} | {{experience.title}}</em></p>
+                <p>{{experience.description}}</p>
+                {% endfor %}
+            </section>
+            <section>
+                <h1>Education</h1>
+                {% for edu in education %}
+                <p><em>{{edu.dates}} | {{edu.school}} | {{edu.degree}}</em></p>
+                <p>{{edu.description}}</p>
 
-<div class="skills">
-    <h1>Skills</h1>
-    <ul>
-    {% for skill in skills %}
-        <div> {{ skill }} </div>
-    {% endfor %}
-    </ul>
+                {% endfor %}
+            </section>
+
+
+        </div>
+
+    </div>
+    <div class="right">
+
+        <div class="name-hero">
+            <h1>Contact Information</h1>
+            <p>Email: {{email}}</p>
+            <p>Phone: {{phone}}</p>
+            <p>LinkedIn: <a href="{{linkedin_url}}">LinkedIn Profile</a></p>
+            <p>Github: <a href="{{github_url}}">GitHub Profile</a></p>
+        </div>
+        <section>
+            <h1>Skills</h1>
+            <ul class="skill-set">
+                {% for skill in skills %}
+                <li>{{skill}}</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </div>
 </div>
-    </body>
-</html>
