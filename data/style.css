@@ -1,34 +1,40 @@
 
+
+
+
 @page {
-  size: A4;
-  margin: 0;
+  size: A4 portrait;
+
 }
 @media print {
-  html, body {
-    width: 210mm;
-    height: 297mm;
+  header, footer {
+    display: none;
   }
-  /* ... the rest of the rules ... */
 }
-
 *, *:before, *:after {
   -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
  }
 
 html
 {
+
 	font-size:100%;
 }
 
+
 body
 {
+    top: 0px;
 	-webkit-font-smoothing:antialiased;
-	color:#333332;
 	font-family:Lora, serif;
-	font-size:18px;
-	font-weight:400;
+	font-size:14.5px;
+	font-weight:500;
 	line-height:1.4;
 	text-rendering:optimizeLegibility;
+}
+
+.parent
+{
 }
 
 .skill-set li:hover
@@ -38,7 +44,7 @@ body
 
 h1
 {
-	color:rgba(0,0,0,.75);
+	color:rgba(0,0,0,1);
 }
 
 .wrapper
@@ -46,27 +52,35 @@ h1
 	height:100%;
 }
 
+
+
+
 .left
 {
 
+left: 0px;
 	height:100%;
 	margin-left:-1px;
 	min-width:256px;
-	position:fixed;
-	width:80%;
-
+	width:70%;
+    float:left;
 }
 
 .right
 {
+right: 0px;
+position: absolute;
 	text-align:center;
 	background-color:rgba(0,0,0,.025);
 	border-left:1px solid rgba(0,0,0,.05);
-	float:right;
+
 	height:100%;
-	position:relative;
-	width:20%;
+	width:30%;
+	padding-left: 30px;
+  padding-top: 70px;
+
 }
+
 
 
 .name-hero
@@ -101,14 +115,14 @@ h1
 
 .name-hero h1 em
 {
-	color:rgba(0,0,0,.3);
+	color:rgba(0,0,0,1);
 	font-style:normal;
 	font-weight:700;
 }
 
 .name-hero p
 {
-	color:rgba(0,0,0,.75);
+	color:rgba(0,0,0,1);
 	font-size:.75em;
 	line-height:1.5;
 	margin:0 8px 0 0;
@@ -119,6 +133,7 @@ h1
 {
     font-size:1.5em;
 	margin:0 auto;
+
 	width:85%;
 }
 
@@ -126,7 +141,7 @@ h1
 {
 	margin:0 auto;
 	max-width:975px;
-	padding:3em;
+	padding:0em;
 }
 
 .inner h1
@@ -136,7 +151,7 @@ h1
 
 .inner p
 {
-	color:rgba(0,0,0,.5);
+	color:rgba(0,0,0,1);
 }
 
 .inner p em
@@ -153,19 +168,17 @@ h1
 ul
 {
 	list-style-type:none;
-	margin-top:-10px;
+	margin-top:0 px;
 	max-width:570px;
-	padding:0;
+	padding:1;
 }
 
-.skill-set li
+.skill-set
 {
-	background:rgba(0,0,0,.75);
-	border-radius:5px;
-	color:#FFF;
-	display:inline-block;
+
+	color:rgba(0,0,0,1);
 	list-style:none;
-	margin:15px 15px 0 0;
+	margin:1px 1px 0 0;
 	padding:10px;
 	text-align:justify;
 }
