@@ -1,11 +1,15 @@
 # SolidCV
 This code utilizes the OpenAI ChatGPT model to improve resumes. It takes in a pdf resume, processes it, and then sends it to the chatbot to be improved. The improved resume is then exported as an html file.
 
+![After](images/before_and_after.png)
+
+
 ## Getting Started
 1. Clone the repository and navigate to the project directory.
 2. Install the required packages using pip install -r requirements.txt.
 3. Add a config.json file to the root directory with the following format: 
-```{"session_token": "your_api_key"}```
+```{"session_token": "your_api_key"}```. <br /> 
+Refer to the setup [guide](https://github.com/acheong08/ChatGPT/wiki/Setup) for more information.
 4. Run the code using `python main.py --data_dir=path/to/data --input_resume=example_input.pdf --output_resume=new_resume.html --config_path=path/to/config.json`.
 5. The improved resume will be exported as an html file in the data directory. To convert it to a pdf, open the html file and use the ctrl+p shortcut to print it to pdf.
 

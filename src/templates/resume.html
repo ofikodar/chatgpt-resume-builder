@@ -1,48 +1,48 @@
-<link href='templates/style.css' rel='stylesheet' type='text/css'>
-<div class="left">
-    <div class="inner">
-        <div class="name-hero">
-            <div class="name-text">
-                <h1>{{name}} </h1>
+<link href='style.css' rel='stylesheet' type='text/css'>
+
+<div class='parent'>
+    <div class="left">
+        <div class="inner">
+            <div class="name-hero">
+                <div class="name-text">
+                    <h1>{{name}} </h1>
+                    <h3>{{title}} </h3>
+                </div>
+
             </div>
-            <h3>{{title}} </h3>
+
+
+            <div class="summary">
+                <h1>Summary</h1>
+                <p>{{summary}}</p>
+            </div>
+            <section>
+                <h1>Employment</h1>
+                {% for experience in work_experience %}
+                <p><em>{{experience.dates}} | {{experience.company}} | {{experience.title}}</em></p>
+                <p>{{experience.description}}</p>
+                {% endfor %}
+            </section>
+            <section>
+                <h1>Education</h1>
+                {% for edu in education %}
+                <p><em>{{edu.dates}} | {{edu.school}} | {{edu.degree}}</em></p>
+                <p>{{edu.description}}</p>
+
+                {% endfor %}
+            </section>
+
 
         </div>
-
-
-        <div class="summary">
-            <h1>Summary</h1>
-            <p>{{summary}}</p>
-        </div>
-        <section>
-            <h1>Employment</h1>
-            {% for experience in work_experience %}
-            <p><em>{{experience.dates}} | {{experience.company}} | {{experience.title}}</em></p>
-            <p>{{experience.description}}</p>
-            {% endfor %}
-        </section>
-        <section>
-            <h1>Education</h1>
-            {% for edu in education %}
-            <p><em>{{edu.dates}} | {{edu.school}} | {{edu.degree}}</em></p>
-            <!--                <p>{{edu.description}}</p>-->
-
-            {% endfor %}
-        </section>
-
-
     </div>
-</div>
     <div class="right">
-
-        <div class="name-hero">
             <h1>Contact Information</h1>
             <p>Email: {{email}}</p>
             <p>Phone: {{phone}}</p>
             <p>Address: {{address}}</p>
             <p>LinkedIn: <a href="{{linkedin_url}}">LinkedIn Profile</a></p>
             <p>Github: <a href="{{github_url}}">GitHub Profile</a></p>
-        </div>
+
         <section>
             <h1>Skills</h1>
             <ul class="skill-set">
@@ -51,5 +51,6 @@
                 {% endfor %}
             </ul>
         </section>
-    </div>
+            </div>
+</div>
 </div>
