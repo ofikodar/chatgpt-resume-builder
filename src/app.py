@@ -91,9 +91,21 @@ def body(DATA_FORMAT):
             section_func(key, DATA_FORMAT[key])
 
 
+def sidebar():
+    with st.sidebar:
+        st.file_uploader('Upload PDF Resume', type="pdf")
+        st.button("Auto Improve All")
+        st.button("Give Feedback")
+        st.download_button('Download PDF', 'text_contents')
+
+def header():
+    st.title("SolidCV - AI Resume Improver")
+
 def _main(DATA_FORMAT):
+    header()
     title(DATA_FORMAT)
     body(DATA_FORMAT)
+    sidebar()
 
 
 if __name__ == '__main__':
