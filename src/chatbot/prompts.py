@@ -1,4 +1,5 @@
-DATA_FORMAT = {'name': '', 'title': '', 'linkedin': '', 'github': '', 'email': '', 'address': '', 'summary': '',
+DATA_FORMAT = {'name': '', 'title': '',
+               'contact_info': {'linkedin': '', 'github': '', 'email': '', 'address': '', 'phone': ''}, 'summary': '',
                'work_experience': [{'title': '', 'company': '', 'dates': '', 'description': ''},
                                    {'title': '', 'company': '', 'dates': '', 'description': ''}, ],
                'education': [{'degree': '', 'school': '', 'dates': '', 'description': ''}, ], 'skills': ['', '', '']}
