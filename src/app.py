@@ -22,6 +22,10 @@ DATA_FORMAT = {'name': 'John Doe', 'title': 'Data Scientist',
                'skills': ['Data analysis', 'Predictive modeling', 'Machine learning', 'Data visualization',
                           'Software development']}
 
+section_examples = {'summary': 'I have passion for new tech',
+                    'work_experience': 'Tell about my ability to lead projects',
+                    'education': 'Describe my degree type in more detail', 'skills': 'Add soft skills'}
+
 
 def list_section(section_name, section_data):
     description_key = 'description'
@@ -34,37 +38,42 @@ def list_section(section_name, section_data):
             col.text_input(key, section_item[key], key=f'{section_name}_{item_id}_{key}')
         st.text_area(description_key, section_item[description_key])
 
-        recruiter_subsection(section_name, item_id)
+        recruiter_subsection(section_name, section_example=section_examples[section_name], item_id=item_id)
         st.markdown('***')
 
 
 def skills_section(section_name, skills_data):
     num_columns = 3
-    print("2222")
     for skills_row in range(0, len(skills_data), num_columns):
-        cols = st.columns([3,1] * num_columns)
+        cols = st.columns([3, 1] * num_columns)
         skills_row_names = skills_data[skills_row: skills_row + num_columns]
         for item_id, skill in enumerate(skills_row_names):
-            skill_id = skills_row  + item_id
-            print(item_id)
+            skill_id = skills_row + item_id
             cols[item_id * 2].info(f'{skill}')
             cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_skill')
 
+    skill_subsection(section_name)
+    recruiter_subsection(section_name, section_example=section_examples[section_name])
     st.markdown('***')
 
 
-def recruiter_subsection(section_name, item_id=0):
+def skill_subsection(section_name, item_id=0):
+    st.text_input("Add skill", key=f'{section_name}_{item_id}_add_skill')
+
+
+def recruiter_subsection(section_name, section_example, item_id=0):
     with st.container():
-        cols = st.columns([3 ,10], gap='small')
+        cols = st.columns([3, 10], gap='small')
         cols[0].write('\n')
         cols[0].write('\n')
         cols[0].button("Auto Section Improve", key=f'{section_name}_{item_id}_improve_auto')
-        cols[1].text_input("", value="Send special request to the bot here...", key=f'{section_name}_{item_id}_improve_manual')
+        cols[1].text_input("", value=f"Send a special request to the bot here... e.g. {section_example}.",
+                           key=f'{section_name}_{item_id}_improve_manual')
 
 
 def summary_section(section_name, summary_data):
     st.text_area('', summary_data, key=f'{section_name}')
-    recruiter_subsection(section_name)
+    recruiter_subsection(section_name, section_examples[section_name])
 
 
 def contact_info_section(section_name, info_data):
@@ -80,9 +89,8 @@ def title(DATA_FORMAT):
 
 
 def body(DATA_FORMAT):
-    # section_dict = {'contact_info': contact_info_section, 'summary': summary_section, 'work_experience': list_section,
-    #                 'education': list_section, 'skills': skills_section}
-    section_dict = {'skills': skills_section}
+    section_dict = {'contact_info': contact_info_section, 'summary': summary_section, 'work_experience': list_section,
+                    'education': list_section, 'skills': skills_section}
     tabs_names = [key.replace('_', ' ').title() for key in section_dict.keys()]
     tabs = st.tabs(tabs_names)
     for tab, key in zip(tabs, section_dict):
