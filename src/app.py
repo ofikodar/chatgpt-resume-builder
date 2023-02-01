@@ -3,6 +3,8 @@ from ast import literal_eval
 
 import streamlit as st
 
+from chatbot.chatgpt import Chatgpt
+
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
                     'education': 'Describe my degree type in more detail', 'skills': 'Add soft skills'}
@@ -104,10 +106,22 @@ def sidebar():
             _init_resume(uploaded_file)
 
         if is_data_available():
-            st.button("Auto Improve All")
+            _init_chatbot()
+            st.button("Auto Improve All", on_click=_improve_all())
             st.button("Give Feedback")
             st.download_button('Download PDF', file_name='output.json', mime="application/json",
                                data=json.dumps(format_resume_data()))
+
+
+def _improve_all():
+    print("Improving resume")
+    st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
+
+
+def _init_chatbot():
+    if not st.session_state.get('chatbot'):
+        st.session_state['chatbot'] = Chatgpt('config.json')
+        print("Chatbot loaded successfully")
 
 
 def _is_new_file(uploaded_file):
@@ -173,7 +187,7 @@ def count_entries(input_dict, entry_type):
 
 
 def title():
-    st.title("SolidCV - AI Resume Improver")
+    st.title("ChatCV - AI Resume Builder")
 
 
 def upload_resume_header():

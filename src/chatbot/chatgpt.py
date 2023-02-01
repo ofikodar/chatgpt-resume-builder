@@ -5,7 +5,7 @@ from typing import Dict
 
 from revChatGPT.ChatGPT import Chatbot
 
-from src.chatbot.prompts import PROMPT, RESUME_PLACEHOLDER
+from .prompts import get_prompt
 
 
 class Chatgpt:
@@ -40,7 +40,7 @@ class Chatgpt:
         Returns:
             Dict: improved resume data
         """
-        chatgpt_input = self.to_chatbot_input(parsed_resume)
+        chatgpt_input = get_prompt(parsed_resume, user_request='', output_type='all')
         response = self.chatbot.ask(chatgpt_input, conversation_id=None, parent_id=None)
         new_resume_data = ast.literal_eval(response['message'])
         return new_resume_data

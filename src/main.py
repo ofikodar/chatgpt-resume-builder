@@ -18,8 +18,8 @@ def improve_resume(args):
     input_path = os.path.join(args.data_dir, args.input_resume)
     parsed_resume = parse_pdf(input_path)
 
-    # chatbot = Chatgpt(args.config_path)
-    # new_resume_data = chatbot.improve_resume(parsed_resume)
+    chatbot = Chatgpt(args.config_path)
+    new_resume_data = chatbot.improve_resume(parsed_resume)
 
     new_resume_data = DATA_FORMAT
     html_resume = build_html_resume(new_resume_data)
