@@ -1,28 +1,7 @@
 import json
+from ast import literal_eval
 
 import streamlit as st
-
-# Sample resume data
-resume_data = {'name': 'John Doe', 'title': 'Data Scientist',
-
-               'contactInfo': {'linkedin': 'linkedin.com/in/johndoe', 'github': 'github.com/johndoe',
-                               'email': 'johndoe@email.com', 'address': '123 Main St, Anytown USA',
-
-                               },
-
-               'summary': 'Highly motivated and experienced data scientist with a passion for solving complex problems and finding insights in data. Skilled in using data to drive business decisions and improve processes.',
-               'workExperience': [{'title': 'Data Scientist', 'company': 'ABC Company', 'dates': 'Jan 2018 - present',
-                                   'description': 'Conducted data analysis and created predictive models to improve company sales and customer satisfaction.'},
-                                  {'title': 'Data Analyst', 'company': 'XYZ Company', 'dates': 'Jan 2015 - Dec 2017',
-                                   'description': 'Collected and analyzed data to support decision-making and improve company operations.'}, ],
-               'education': [{'degree': 'Master of Science in Data Science', 'school': 'University of Technology',
-                              'dates': 'Jan 2013 - Dec 2014',
-                              'description': 'Focus on machine learning and data visualization techniques.'},
-                             {'degree': 'Bachelor of Science in Computer Science', 'school': 'University of Science',
-                              'dates': 'Jan 2009 - Dec 2012',
-                              'description': 'Focus on software development and algorithms.'}, ],
-               'skills': ['Data analysis', 'Predictive modeling', 'Machine learning', 'Data visualization',
-                          'Software development']}
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
@@ -87,7 +66,7 @@ def contact_info_section(section_name, info_data):
     st.markdown('***')
 
 
-def title():
+def header():
     st.text_input('name', st.session_state.resume_data['name'], key="name")
     st.text_input('title', st.session_state.resume_data['title'], key="title")
 
@@ -105,11 +84,20 @@ def body():
 
 def sidebar():
     with st.sidebar:
-        st.file_uploader('Upload PDF Resume', type="pdf")
-        st.button("Auto Improve All")
-        st.button("Give Feedback")
-        st.download_button('Download PDF', file_name='output.json', mime="application/json",
-                           data=json.dumps(format_resume_data()))
+        uploaded_file = st.file_uploader('Upload PDF Resume', type="json")
+        if uploaded_file:
+            _init_resume(uploaded_file)
+
+        if is_data_available():
+            st.button("Auto Improve All")
+            st.button("Give Feedback")
+            st.download_button('Download PDF', file_name='output.json', mime="application/json",
+                               data=json.dumps(format_resume_data()))
+
+
+def _init_resume(uploaded_file):
+    resume_data = literal_eval(uploaded_file.read().decode('utf8'))
+    st.session_state['resume_data'] = resume_data
 
 
 def format_resume_data():
@@ -164,17 +152,28 @@ def count_entries(input_dict, entry_type):
     return max_index + 1
 
 
-def header():
+def title():
     st.title("SolidCV - AI Resume Improver")
 
 
+def upload_resume_header():
+    st.success("Upload PDF Resume ")
+
+
+def is_data_available():
+    return st.session_state.get('resume_data')
+
+
 def _main():
-    if 'resume_data' not in st.session_state:
-        st.session_state['resume_data'] = resume_data
-    header()
     title()
-    body()
     sidebar()
+
+    if is_data_available():
+        header()
+        body()
+
+    else:
+        upload_resume_header()
 
 
 if __name__ == '__main__':
