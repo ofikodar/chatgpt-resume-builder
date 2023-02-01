@@ -1,3 +1,5 @@
+import json
+
 import streamlit as st
 
 # Sample resume data
@@ -106,7 +108,8 @@ def sidebar():
         st.file_uploader('Upload PDF Resume', type="pdf")
         st.button("Auto Improve All")
         st.button("Give Feedback")
-        st.download_button('Download PDF', file_name='output.json', mime="application/json")
+        st.download_button('Download PDF', file_name='output.json', mime="application/json",
+                           data=json.dumps(format_resume_data()))
 
 
 def format_resume_data():
