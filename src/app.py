@@ -30,17 +30,32 @@ def skills_section(section_name, skills_data):
         skills_row_names = skills_data[skills_row: skills_row + num_columns]
         for item_id, skill in enumerate(skills_row_names):
             skill_id = skills_row + item_id
-            cols[item_id * 2].text_input('', value=skill, key=f'{section_name}_{skill_id}', label_visibility='hidden')
-            cols[item_id * 2 + 1].markdown('# ')
-            cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_skill')
+            cols[item_id * 2].text_input(' ', value=skill, key=f'{section_name}_{skill_id}', label_visibility='hidden')
+            cols[item_id * 2 + 1].markdown('## ')
+            if cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_skill'):
+                _remove_skill(skill_id, skills_data)
 
     skill_subsection(section_name)
     recruiter_subsection(section_name, section_example=section_examples[section_name])
     st.markdown('***')
 
 
+def _remove_skill(skill_id, skills_data):
+    del skills_data[skill_id]
+    st.experimental_rerun()
+
+
 def skill_subsection(section_name, item_id=0):
-    st.text_input("Add skill", key=f'{section_name}_{item_id}_add_skill')
+    key = f'{section_name}_{item_id}_add_skill'
+    cols = st.columns([12, 1])
+    new_skill = cols[0].text_input("Add skill", key=key)
+    cols[1].markdown('##')
+    clicked = cols[1].button("\+")
+    if clicked and new_skill:
+        st.write(new_skill)
+        st.session_state['resume_data'][section_name].append(new_skill)
+        st.write(st.session_state['resume_data'][section_name])
+        st.experimental_rerun()
 
 
 def recruiter_subsection(section_name, section_example, item_id=0):
@@ -85,7 +100,7 @@ def body():
 def sidebar():
     with st.sidebar:
         uploaded_file = st.file_uploader('Upload PDF Resume', type="json")
-        if uploaded_file:
+        if uploaded_file and _is_new_file(uploaded_file):
             _init_resume(uploaded_file)
 
         if is_data_available():
@@ -95,9 +110,14 @@ def sidebar():
                                data=json.dumps(format_resume_data()))
 
 
+def _is_new_file(uploaded_file):
+    return uploaded_file.id != st.session_state.get('file_id', '')
+
+
 def _init_resume(uploaded_file):
     resume_data = literal_eval(uploaded_file.read().decode('utf8'))
     st.session_state['resume_data'] = resume_data
+    st.session_state['file_id'] = uploaded_file.id
 
 
 def format_resume_data():
