@@ -20,9 +20,12 @@ def parse_pdf(pdf_file):
     return pdf_text
 
 
-def export_html_resume(data, output_path):
+def build_html_resume(data):
     env = Environment(loader=FileSystemLoader('templates'))
     template = env.get_template('resume.html')
-    html_output = template.render(data)
+    html_resume = template.render(data)
+    return html_resume
+
+def export_html(html_resume, output_path):
     with open(output_path, 'w', encoding='utf8') as f:
-        f.write(html_output)
+        f.write(html_resume)

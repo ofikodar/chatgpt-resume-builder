@@ -1,46 +1,124 @@
-import argparse
-import os
+import streamlit as st
 
-from src.chatbot.chatgpt import Chatgpt
-from src.utils import parse_pdf, export_html_resume
+# Sample resume data
+DATA_FORMAT = {'name': 'John Doe', 'title': 'Data Scientist',
+
+               'contact_info': {'linkedin': 'linkedin.com/in/johndoe', 'github': 'github.com/johndoe',
+                                'email': 'johndoe@email.com', 'address': '123 Main St, Anytown USA',
+
+                                },
+
+               'summary': 'Highly motivated and experienced data scientist with a passion for solving complex problems and finding insights in data. Skilled in using data to drive business decisions and improve processes.',
+               'work_experience': [{'title': 'Data Scientist', 'company': 'ABC Company', 'dates': 'Jan 2018 - present',
+                                    'description': 'Conducted data analysis and created predictive models to improve company sales and customer satisfaction.'},
+                                   {'title': 'Data Analyst', 'company': 'XYZ Company', 'dates': 'Jan 2015 - Dec 2017',
+                                    'description': 'Collected and analyzed data to support decision-making and improve company operations.'}, ],
+               'education': [{'degree': 'Master of Science in Data Science', 'school': 'University of Technology',
+                              'dates': 'Jan 2013 - Dec 2014',
+                              'description': 'Focus on machine learning and data visualization techniques.'},
+                             {'degree': 'Bachelor of Science in Computer Science', 'school': 'University of Science',
+                              'dates': 'Jan 2009 - Dec 2012',
+                              'description': 'Focus on software development and algorithms.'}, ],
+               'skills': ['Data analysis', 'Predictive modeling', 'Machine learning', 'Data visualization',
+                          'Software development']}
+
+section_examples = {'summary': 'I have passion for new tech',
+                    'work_experience': 'Tell about my ability to lead projects',
+                    'education': 'Describe my degree type in more detail', 'skills': 'Add soft skills'}
 
 
-def improve_resume(args):
-    """
-    This function takes the command line arguments, parses the input pdf resume using the parse_pdf function from the utils
-    module, passes the parsed data to the Chatgpt model's improve_resume method to generate an improved version of the
-    resume, and then exports the improved resume in html format using the export_html_resume function from the utils
-    module.
-    :param args: command line arguments containing the input and output file paths, and the data directory
-    :type args: argparse.Namespace
-    """
-    input_path = os.path.join(args.data_dir, args.input_resume)
-    parsed_resume = parse_pdf(input_path)
+def list_section(section_name, section_data):
+    description_key = 'description'
 
-    chatbot = Chatgpt(args.config_path)
-    new_resume_data = chatbot.improve_resume(parsed_resume)
+    item_keys = list(section_data[0].keys())
+    item_keys.remove(description_key)
+    for item_id, section_item in enumerate(section_data):
+        cols = st.columns(len(item_keys))
+        for col, key in zip(cols, item_keys):
+            col.text_input(key, section_item[key], key=f'{section_name}_{item_id}_{key}')
+        st.text_area(description_key, section_item[description_key])
 
-    output_path = os.path.join(args.data_dir, args.output_resume)
-    export_html_resume(new_resume_data, output_path)
+        recruiter_subsection(section_name, section_example=section_examples[section_name], item_id=item_id)
+        st.markdown('***')
 
 
-def main():
-    """
-    Main function to parse command line arguments and call the parse_and_improve_resume function.
-    """
-    parser = argparse.ArgumentParser()
+def skills_section(section_name, skills_data):
+    num_columns = 3
+    for skills_row in range(0, len(skills_data), num_columns):
+        cols = st.columns([3, 1] * num_columns)
+        skills_row_names = skills_data[skills_row: skills_row + num_columns]
+        for item_id, skill in enumerate(skills_row_names):
+            skill_id = skills_row + item_id
+            cols[item_id * 2].info(f'{skill}')
+            cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_skill')
 
-    parser.add_argument("--data_dir", type=str, default='../data', help="Directory containing input and output files")
-    parser.add_argument("--config_path", type=str, default='config.json', help="Path to the configuration file")
-    parser.add_argument("--input_resume", type=str, default='example_input.pdf', help="Name of input resume file")
-    parser.add_argument("--output_resume", type=str, default='new_resume.html', help="Name of output resume file")
+    skill_subsection(section_name)
+    recruiter_subsection(section_name, section_example=section_examples[section_name])
+    st.markdown('***')
 
-    args = parser.parse_args()
-    try:
-        improve_resume(args)
-    except Exception as e:
-        print(f'An error occurred: {e}')
+
+def skill_subsection(section_name, item_id=0):
+    st.text_input("Add skill", key=f'{section_name}_{item_id}_add_skill')
+
+
+def recruiter_subsection(section_name, section_example, item_id=0):
+    with st.container():
+        cols = st.columns([3, 10], gap='small')
+        cols[0].write('\n')
+        cols[0].write('\n')
+        cols[0].button("Auto Section Improve", key=f'{section_name}_{item_id}_improve_auto')
+        cols[1].text_input("section_example", value=f"Send a special request to the bot here... e.g. {section_example}.",
+                           key=f'{section_name}_{item_id}_improve_manual',label_visibility='hidden')
+
+
+def summary_section(section_name, summary_data):
+    st.text_area(section_name, summary_data, key=f'{section_name}',label_visibility='hidden')
+    recruiter_subsection(section_name, section_examples[section_name])
+
+
+def contact_info_section(section_name, info_data):
+    for key, value in info_data.items():
+        if value:
+            st.text_input(key.title(), value)
+    st.markdown('***')
+
+
+def title(DATA_FORMAT):
+    st.text_input('name', DATA_FORMAT['name'])
+    st.text_input('title', DATA_FORMAT['title'])
+
+
+def body(DATA_FORMAT):
+    section_dict = {'contact_info': contact_info_section, 'summary': summary_section, 'work_experience': list_section,
+                    'education': list_section, 'skills': skills_section}
+    tabs_names = [key.replace('_', ' ').title() for key in section_dict.keys()]
+    tabs = st.tabs(tabs_names)
+    for tab, key in zip(tabs, section_dict):
+        section_func = section_dict[key]
+        with tab:
+            section_func(key, DATA_FORMAT[key])
+
+
+def sidebar():
+    with st.sidebar:
+        st.file_uploader('Upload PDF Resume', type="pdf")
+        st.button("Auto Improve All")
+        st.button("Give Feedback")
+        st.download_button('Download PDF', 'text_contents')
+
+
+def header():
+    st.title("SolidCV - AI Resume Improver")
+
+
+def _main(DATA_FORMAT):
+    header()
+    title(DATA_FORMAT)
+    body(DATA_FORMAT)
+    sidebar()
 
 
 if __name__ == '__main__':
-    main()
+    _main(DATA_FORMAT)
+
+    # bootstrap 4 collapse example
