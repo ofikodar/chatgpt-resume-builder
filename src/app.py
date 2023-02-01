@@ -67,12 +67,12 @@ def recruiter_subsection(section_name, section_example, item_id=0):
         cols[0].write('\n')
         cols[0].write('\n')
         cols[0].button("Auto Section Improve", key=f'{section_name}_{item_id}_improve_auto')
-        cols[1].text_input("", value=f"Send a special request to the bot here... e.g. {section_example}.",
-                           key=f'{section_name}_{item_id}_improve_manual')
+        cols[1].text_input("section_example", value=f"Send a special request to the bot here... e.g. {section_example}.",
+                           key=f'{section_name}_{item_id}_improve_manual',label_visibility='hidden')
 
 
 def summary_section(section_name, summary_data):
-    st.text_area('', summary_data, key=f'{section_name}')
+    st.text_area(section_name, summary_data, key=f'{section_name}',label_visibility='hidden')
     recruiter_subsection(section_name, section_examples[section_name])
 
 
