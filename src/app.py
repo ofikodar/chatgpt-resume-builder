@@ -7,6 +7,8 @@ import streamlit as st
 from chatbot.chatgpt import Chatgpt
 import asyncio
 
+from utils import parse_pdf
+
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
                     'education': 'Describe my degree type in more detail', 'skills': 'Add soft skills'}
@@ -131,20 +133,19 @@ def body():
 
 def sidebar():
     with st.sidebar:
-        uploaded_file = st.file_uploader('Upload PDF Resume', type="json")
-        if uploaded_file and _is_new_file(uploaded_file):
+        uploaded_file = st.file_uploader('Upload PDF Resume', type="PDF")
+        if uploaded_file and _is_new_file(uploaded_file) and is_chatbot_loaded():
             _init_resume(uploaded_file)
 
         if is_data_loaded() and is_chatbot_loaded():
-            st.button("Auto Improve All", on_click=_improve_all)
+            st.button("Improve More", on_click=_improve_more)
             st.download_button('Download PDF', file_name='output.json', mime="application/json",
                                data=json.dumps(format_resume_data()))
 
 
-def _improve_all():
+def _improve_more():
     print("Improving resume")
     st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
-    st.experimental_rerun()
 
 
 def _init_chatbot():
@@ -162,9 +163,10 @@ def _is_new_file(uploaded_file):
 
 
 def _init_resume(uploaded_file):
-    resume_data = literal_eval(uploaded_file.read().decode('utf8'))
-    st.session_state['resume_data'] = resume_data
+    resume_data = parse_pdf(uploaded_file)
+    st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(resume_data)
     st.session_state['file_id'] = uploaded_file.id
+    st.experimental_rerun()
 
 
 def format_resume_data():
@@ -224,7 +226,7 @@ def title():
 
 
 def upload_resume_header():
-    st.success("Upload PDF Resume ")
+    st.success("Upload PDF Resume - Let the magic begin...")
 
 
 def is_data_loaded():

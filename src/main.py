@@ -1,6 +1,8 @@
 import argparse
 import os
 
+from spacy.cli import download
+
 from src.chatbot.chatgpt import Chatgpt
 from src.chatbot.prompts import data_format
 from src.utils import parse_pdf, build_html_resume, export_html
@@ -16,7 +18,6 @@ def improve_resume(args):
     :type args: argparse.Namespace
     """
     input_path = os.path.join(args.data_dir, args.input_resume)
-    parsed_resume = parse_pdf(input_path)
 
     chatbot = Chatgpt(args.config_path)
     new_resume_data = chatbot.improve_section("""my name is ofek and i have an msc""")
@@ -46,4 +47,6 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    data = resumeparse.read_file(r'C:\Users\ofiko\SolidCV\data\example_input.pdf')
+    pass
+    # main()
