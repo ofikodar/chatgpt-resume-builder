@@ -71,8 +71,8 @@ left: 0px;
 right: 0px;
 position: absolute;
 	text-align:center;
-	background-color:rgba(0,0,0,.025);
-	border-left:1px solid rgba(0,0,0,.05);
+	background-color:rgba(200,0,0,.025);
+	border-left:1px solid rgba(230,0,0,.05);
 
 	height:100%;
 	width:30%;

@@ -1,7 +1,6 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<link href='main.css' rel='stylesheet' type='text/css'>-->
+<html>
 
+    <body>
 <div class='parent'>
     <div class="left">
         <div class="inner">
@@ -20,7 +19,7 @@
             </div>
             <section>
                 <h1>Employment</h1>
-                {% for experience in work_experience %}
+                {% for experience in workExperience %}
                 <p><em>{{experience.dates}} | {{experience.company}} | {{experience.title}}</em></p>
                 <p>{{experience.description}}</p>
                 {% endfor %}
@@ -56,4 +55,5 @@
             </div>
 </div>
 </div>
-<!--</html>-->
+  </body>
+</html>

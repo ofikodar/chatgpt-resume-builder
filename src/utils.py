@@ -27,7 +27,7 @@ def _parse(file):
 
 
 def build_html_resume(data):
-    env = Environment(loader=FileSystemLoader('templates'))
+    env = Environment(loader=FileSystemLoader('src/templates'))
     template = env.get_template('resume.html')
     html_resume = template.render(data)
     return html_resume
