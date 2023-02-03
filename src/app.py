@@ -1,7 +1,11 @@
 import json
+import time
 from ast import literal_eval
 
 import streamlit as st
+
+from chatbot.chatgpt import Chatgpt
+import asyncio
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
@@ -36,7 +40,6 @@ def skills_section(section_name, skills_data):
                 _remove_skill(skill_id, skills_data)
 
     skill_subsection(section_name)
-    recruiter_subsection(section_name, section_example=section_examples[section_name])
     st.markdown('***')
 
 
@@ -63,10 +66,39 @@ def recruiter_subsection(section_name, section_example, item_id=0):
         cols = st.columns([3, 10], gap='small')
         cols[0].write('\n')
         cols[0].write('\n')
-        cols[0].button("Auto Section Improve", key=f'{section_name}_{item_id}_improve_auto')
-        cols[1].text_input("section_example",
-                           value=f"Send a special request to the bot here... e.g. {section_example}.",
-                           key=f'{section_name}_{item_id}_improve_manual', label_visibility='hidden')
+        button_clicked = cols[0].button("Auto Section Improve", key=f'{section_name}_{item_id}_improve_auto')
+        trigger_key = 'Add a special request'
+        user_request_template = f"{trigger_key} to the bot here... e.g. {section_example}."
+
+        user_request = cols[1].text_input("section_example", value=user_request_template,
+                                          key=f'{section_name}_{item_id}_improve_manual', label_visibility='hidden')
+        if button_clicked:
+            user_request = '' if trigger_key in user_request else user_request
+            section_key = get_item_key(section_name, item_id)
+            section_text = st.session_state[section_key]
+            new_section_text = st.session_state['chatbot'].improve_section(section_text, user_request)
+
+            update_resume_data(new_section_text, section_name, item_id)
+            st.experimental_rerun()
+
+
+def get_item_key(section_name, item_id=0):
+    section_key = ''
+    if section_name in ['workExperience', 'Education']:
+        key = 'description'
+        section_key = f'{section_name}_{item_id}_{key}'
+    elif section_name == 'summary':
+        section_key = f'{section_name}'
+    return section_key
+
+
+def update_resume_data(text_input, section_name, item_id=0):
+    if section_name in ['workExperience', 'Education']:
+        key = 'description'
+        st.session_state['resume_data'][section_name][item_id][key] = text_input
+    elif section_name == 'summary':
+        section_key = f'{section_name}'
+        st.session_state['resume_data'][section_key] = text_input
 
 
 def summary_section(section_name, summary_data):
@@ -103,11 +135,26 @@ def sidebar():
         if uploaded_file and _is_new_file(uploaded_file):
             _init_resume(uploaded_file)
 
-        if is_data_available():
-            st.button("Auto Improve All")
-            st.button("Give Feedback")
+        if is_data_loaded() and is_chatbot_loaded():
+            st.button("Auto Improve All", on_click=_improve_all)
             st.download_button('Download PDF', file_name='output.json', mime="application/json",
                                data=json.dumps(format_resume_data()))
+
+
+def _improve_all():
+    print("Improving resume")
+    st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
+    st.experimental_rerun()
+
+
+def _init_chatbot():
+    if not st.session_state.get('chatbot'):
+        st.session_state['chatbot'] = Chatgpt('config.json')
+        print("Chatbot loaded successfully")
+
+
+def is_chatbot_loaded():
+    return st.session_state.get('chatbot')
 
 
 def _is_new_file(uploaded_file):
@@ -173,27 +220,29 @@ def count_entries(input_dict, entry_type):
 
 
 def title():
-    st.title("SolidCV - AI Resume Improver")
+    st.title("ChatCV - AI Resume Builder")
 
 
 def upload_resume_header():
     st.success("Upload PDF Resume ")
 
 
-def is_data_available():
+def is_data_loaded():
     return st.session_state.get('resume_data')
 
 
 def _main():
     title()
-    sidebar()
+    _init_chatbot()
+    if is_chatbot_loaded():
+        sidebar()
 
-    if is_data_available():
-        header()
-        body()
+        if is_data_loaded():
+            header()
+            body()
 
-    else:
-        upload_resume_header()
+        else:
+            upload_resume_header()
 
 
 if __name__ == '__main__':

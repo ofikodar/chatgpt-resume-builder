@@ -1,18 +1,19 @@
 import ast
 import json
+import re
 from pathlib import Path
 from typing import Dict
 
 from revChatGPT.ChatGPT import Chatbot
 
-from src.chatbot.prompts import PROMPT, RESUME_PLACEHOLDER
+from .prompts import get_prompt
 
 
 class Chatgpt:
     def __init__(self, config_path):
-
         session_token = self.load_session_token(config_path)
-        self.chatbot = Chatbot(session_token, conversation_id=None, parent_id=None)
+        self.conversation_id = None
+        self.chatbot = Chatbot(session_token, conversation_id=self.conversation_id, parent_id=None)
 
     @staticmethod
     def load_session_token(config_path) -> Dict:
@@ -40,21 +41,42 @@ class Chatgpt:
         Returns:
             Dict: improved resume data
         """
-        chatgpt_input = self.to_chatbot_input(parsed_resume)
-        response = self.chatbot.ask(chatgpt_input, conversation_id=None, parent_id=None)
-        new_resume_data = ast.literal_eval(response['message'])
+        chatgpt_input = get_prompt(parsed_resume, user_request='', output_type='all')
+        response = self._ask(chatgpt_input)
+        new_resume_data = self.parse_json_from_string(response)
         return new_resume_data
 
+    def improve_section(self, section_text, user_request=''):
+        chatgpt_input = get_prompt(section_text, user_request=user_request, output_type='section')
+        response = self._ask(chatgpt_input)
+        new_section_text = self.clean_section_response(response)
+        return new_section_text
+
+    def _ask(self, chatgpt_input):
+        response = self.chatbot.ask(chatgpt_input, conversation_id=self.conversation_id, parent_id=None)
+        self.conversation_id = response['conversation_id']
+        return response['message']
+
     @staticmethod
-    def to_chatbot_input(parsed_resume: str) -> str:
-        """
-        Prepare the input for ChatGPT by replacing the resume placeholder with the parsed resume data
+    def parse_json_from_string(input_string):
+        try:
+            start = input_string.index("{")
+            end = input_string.rindex("}") + 1
+            json_string = input_string[start:end]
+        except ValueError:
+            json_string = input_string
+        return ast.literal_eval(json_string)
 
-        Args:
-            parsed_resume (str): parsed resume data in string format
+    def clean_section_response(self, input_string):
+        try:
+            start = input_string.index("\"")
+            end = input_string.rindex("\"") + 1
+            input_string = input_string[start:end]
+        except ValueError:
+            pass
+        input_string = self.remove_prefix(input_string)
+        return input_string
 
-        Returns:
-            str: input for ChatGPT
-        """
-        chatgpt_input = PROMPT.replace(RESUME_PLACEHOLDER, parsed_resume)
-        return chatgpt_input
+    @staticmethod
+    def remove_prefix(input_string):
+        return re.sub(r'\w+:\n', '', input_string)
