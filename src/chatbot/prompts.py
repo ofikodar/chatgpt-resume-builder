@@ -13,7 +13,8 @@ command_prompt = 'Re-write the input as professionally as possible, adding vital
 user_request_prompt = f'{prompt_placeholder}'
 
 output_commands_prompts = dict()
-output_commands_prompts['all'] = f'Return the output as dictionary in the next format {str(data_format)}.'
+output_commands_prompts[
+    'all'] = f'Return the output as dictionary in the next format {str(data_format)}. Return only the keys: {str(list(data_format))}.'
 output_commands_prompts['section'] = f'Return the output as string.'
 
 input_prompt = f'Input: {prompt_placeholder}'
@@ -29,6 +30,5 @@ def get_prompt(input_data, user_request='', output_type='all'):
 
     template = '\n'.join(
         [recruiter_prompt, command_prompt, user_request_prompt.replace(prompt_placeholder, user_request),
-         input_prompt.replace(prompt_placeholder, input_data), output_commands_prompts[output_type]])
+         input_prompt.replace(prompt_placeholder, input_data), output_commands_prompts[output_type], command_prompt])
     return template
-
