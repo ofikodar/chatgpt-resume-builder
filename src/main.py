@@ -19,7 +19,7 @@ def improve_resume(args):
     parsed_resume = parse_pdf(input_path)
 
     chatbot = Chatgpt(args.config_path)
-    new_resume_data = chatbot.improve_resume("""my name is ofek and i have an msc""")
+    new_resume_data = chatbot.improve_section("""my name is ofek and i have an msc""")
 
     new_resume_data = new_resume_data
     html_resume = build_html_resume(new_resume_data)

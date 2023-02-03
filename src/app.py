@@ -79,8 +79,8 @@ def recruiter_subsection(section_name, section_example, item_id=0):
             key = 'description'
             section_key = f'{section_name}_{item_id}_{key}'
             section_text = st.session_state[section_key]
-            st.write(section_text)
-            st.session_state['chatbot'].improve_section(section_text,user_request)
+            st.session_state['resume_data'][section_name][item_id][key] = st.session_state['chatbot'].improve_section(section_text,user_request)
+            st.experimental_rerun()
 
 
 def summary_section(section_name, summary_data):
