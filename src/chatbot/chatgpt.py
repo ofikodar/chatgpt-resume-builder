@@ -11,7 +11,8 @@ from .prompts import get_prompt
 class Chatgpt:
     def __init__(self, config_path):
         session_token = self.load_session_token(config_path)
-        self.chatbot = Chatbot(session_token, conversation_id=None, parent_id=None)
+        self.conversation_id = None
+        self.chatbot = Chatbot(session_token, conversation_id=self.conversation_id, parent_id=None)
 
     @staticmethod
     def load_session_token(config_path) -> Dict:
@@ -40,14 +41,19 @@ class Chatgpt:
             Dict: improved resume data
         """
         chatgpt_input = get_prompt(parsed_resume, user_request='', output_type='all')
-        response = self.chatbot.ask(chatgpt_input, conversation_id=None, parent_id=None)
-        new_resume_data = self.parse_json_from_string(response['message'])
+        response = self._ask(chatgpt_input)
+        new_resume_data = self.parse_json_from_string(response)
         return new_resume_data
 
     def improve_section(self, section_text, user_request=''):
         chatgpt_input = get_prompt(section_text, user_request=user_request, output_type='section')
-        response = self.chatbot.ask(chatgpt_input, conversation_id=None, parent_id=None)
+        response = self._ask(chatgpt_input)
         return response
+
+    def _ask(self, chatgpt_input):
+        response = self.chatbot.ask(chatgpt_input, conversation_id=self.conversation_id, parent_id=None)
+        self.conversation_id = response['conversation_id']
+        return response['message']
 
     @staticmethod
     def parse_json_from_string(input_string):
