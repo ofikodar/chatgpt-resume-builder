@@ -1,4 +1,5 @@
 import json
+import re
 import time
 from ast import literal_eval
 
@@ -7,9 +8,11 @@ import streamlit as st
 from chatbot.chatgpt import Chatgpt
 import asyncio
 
+from utils import parse_pdf
+
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
-                    'education': 'Describe my degree type in more detail', 'skills': 'Add soft skills'}
+                    'education': 'Describe my degree type in more details'}
 
 
 def list_section(section_name, section_data):
@@ -84,7 +87,7 @@ def recruiter_subsection(section_name, section_example, item_id=0):
 
 def get_item_key(section_name, item_id=0):
     section_key = ''
-    if section_name in ['workExperience', 'Education']:
+    if section_name in ['workExperience', 'education']:
         key = 'description'
         section_key = f'{section_name}_{item_id}_{key}'
     elif section_name == 'summary':
@@ -93,7 +96,7 @@ def get_item_key(section_name, item_id=0):
 
 
 def update_resume_data(text_input, section_name, item_id=0):
-    if section_name in ['workExperience', 'Education']:
+    if section_name in ['workExperience', 'education']:
         key = 'description'
         st.session_state['resume_data'][section_name][item_id][key] = text_input
     elif section_name == 'summary':
@@ -121,30 +124,31 @@ def header():
 def body():
     section_dict = {'contactInfo': contact_info_section, 'summary': summary_section, 'workExperience': list_section,
                     'education': list_section, 'skills': skills_section}
-    tabs_names = [key.replace('_', ' ').title() for key in section_dict.keys()]
+    tabs_names = [key_to_tab_name(key) for key in section_dict.keys()]
     tabs = st.tabs(tabs_names)
     for tab, key in zip(tabs, section_dict):
         section_func = section_dict[key]
         with tab:
             section_func(key, st.session_state['resume_data'][key])
 
+def key_to_tab_name(input_string):
+    return re.sub(r'([A-Z])', r' \1', input_string).strip().title()
 
 def sidebar():
     with st.sidebar:
-        uploaded_file = st.file_uploader('Upload PDF Resume', type="json")
-        if uploaded_file and _is_new_file(uploaded_file):
+        uploaded_file = st.file_uploader('Upload PDF Resume', type="PDF")
+        if uploaded_file and _is_new_file(uploaded_file) and is_chatbot_loaded():
             _init_resume(uploaded_file)
 
         if is_data_loaded() and is_chatbot_loaded():
-            st.button("Auto Improve All", on_click=_improve_all)
+            st.button("Improve More", on_click=_improve_more)
             st.download_button('Download PDF', file_name='output.json', mime="application/json",
                                data=json.dumps(format_resume_data()))
 
 
-def _improve_all():
+def _improve_more():
     print("Improving resume")
     st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
-    st.experimental_rerun()
 
 
 def _init_chatbot():
@@ -162,9 +166,10 @@ def _is_new_file(uploaded_file):
 
 
 def _init_resume(uploaded_file):
-    resume_data = literal_eval(uploaded_file.read().decode('utf8'))
-    st.session_state['resume_data'] = resume_data
+    resume_data = parse_pdf(uploaded_file)
+    st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(resume_data)
     st.session_state['file_id'] = uploaded_file.id
+    st.experimental_rerun()
 
 
 def format_resume_data():
@@ -224,7 +229,7 @@ def title():
 
 
 def upload_resume_header():
-    st.success("Upload PDF Resume ")
+    st.success("Upload PDF Resume - Let the magic begin...")
 
 
 def is_data_loaded():
