@@ -2,7 +2,7 @@ import argparse
 import os
 
 from src.chatbot.chatgpt import Chatgpt
-from src.chatbot.prompts import DATA_FORMAT
+from src.chatbot.prompts import data_format
 from src.utils import parse_pdf, build_html_resume, export_html
 
 
@@ -19,9 +19,9 @@ def improve_resume(args):
     parsed_resume = parse_pdf(input_path)
 
     chatbot = Chatgpt(args.config_path)
-    new_resume_data = chatbot.improve_resume(parsed_resume)
+    new_resume_data = chatbot.improve_resume("""my name is ofek and i have an msc""")
 
-    new_resume_data = DATA_FORMAT
+    new_resume_data = new_resume_data
     html_resume = build_html_resume(new_resume_data)
     output_path = os.path.join(args.data_dir, args.output_resume)
     export_html(html_resume, output_path)

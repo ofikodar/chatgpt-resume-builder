@@ -10,7 +10,6 @@ from .prompts import get_prompt
 
 class Chatgpt:
     def __init__(self, config_path):
-
         session_token = self.load_session_token(config_path)
         self.chatbot = Chatbot(session_token, conversation_id=None, parent_id=None)
 
@@ -42,19 +41,17 @@ class Chatgpt:
         """
         chatgpt_input = get_prompt(parsed_resume, user_request='', output_type='all')
         response = self.chatbot.ask(chatgpt_input, conversation_id=None, parent_id=None)
-        new_resume_data = ast.literal_eval(response['message'])
+        new_resume_data = self.parse_json_from_string(response['message'])
         return new_resume_data
 
+    def improve_section(self, section_text, user_request=''):
+        chatgpt_input = get_prompt(section_text, user_request=user_request, output_type='section')
+        response = self.chatbot.ask(chatgpt_input, conversation_id=None, parent_id=None)
+        return response
+
     @staticmethod
-    def to_chatbot_input(parsed_resume: str) -> str:
-        """
-        Prepare the input for ChatGPT by replacing the resume placeholder with the parsed resume data
-
-        Args:
-            parsed_resume (str): parsed resume data in string format
-
-        Returns:
-            str: input for ChatGPT
-        """
-        chatgpt_input = PROMPT.replace(RESUME_PLACEHOLDER, parsed_resume)
-        return chatgpt_input
+    def parse_json_from_string(input_string):
+        start = input_string.index("{")
+        end = input_string.rindex("}") + 1
+        json_string = input_string[start:end]
+        return ast.literal_eval(json_string)

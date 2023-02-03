@@ -1,9 +1,11 @@
 import json
+import time
 from ast import literal_eval
 
 import streamlit as st
 
 from chatbot.chatgpt import Chatgpt
+import asyncio
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
@@ -65,10 +67,20 @@ def recruiter_subsection(section_name, section_example, item_id=0):
         cols = st.columns([3, 10], gap='small')
         cols[0].write('\n')
         cols[0].write('\n')
-        cols[0].button("Auto Section Improve", key=f'{section_name}_{item_id}_improve_auto')
-        cols[1].text_input("section_example",
-                           value=f"Send a special request to the bot here... e.g. {section_example}.",
+        button_clicked = cols[0].button("Auto Section Improve", key=f'{section_name}_{item_id}_improve_auto')
+        trigger_key = 'Add a special request'
+        user_request_template = f"{trigger_key} to the bot here... e.g. {section_example}."
+
+        user_request = cols[1].text_input("section_example",
+                           value=user_request_template,
                            key=f'{section_name}_{item_id}_improve_manual', label_visibility='hidden')
+        if button_clicked:
+            user_request = '' if trigger_key in user_request else user_request
+            key = 'description'
+            section_key = f'{section_name}_{item_id}_{key}'
+            section_text = st.session_state[section_key]
+            st.write(section_text)
+            st.session_state['chatbot'].improve_section(section_text,user_request)
 
 
 def summary_section(section_name, summary_data):
@@ -105,10 +117,8 @@ def sidebar():
         if uploaded_file and _is_new_file(uploaded_file):
             _init_resume(uploaded_file)
 
-        if is_data_available():
-            _init_chatbot()
-            st.button("Auto Improve All", on_click=_improve_all())
-            st.button("Give Feedback")
+        if is_data_loaded() and is_chatbot_loaded():
+            st.button("Auto Improve All", on_click=_improve_all)
             st.download_button('Download PDF', file_name='output.json', mime="application/json",
                                data=json.dumps(format_resume_data()))
 
@@ -122,6 +132,10 @@ def _init_chatbot():
     if not st.session_state.get('chatbot'):
         st.session_state['chatbot'] = Chatgpt('config.json')
         print("Chatbot loaded successfully")
+
+
+def is_chatbot_loaded():
+    return st.session_state.get('chatbot')
 
 
 def _is_new_file(uploaded_file):
@@ -194,20 +208,22 @@ def upload_resume_header():
     st.success("Upload PDF Resume ")
 
 
-def is_data_available():
+def is_data_loaded():
     return st.session_state.get('resume_data')
 
 
 def _main():
     title()
-    sidebar()
+    _init_chatbot()
+    if is_chatbot_loaded():
+        sidebar()
 
-    if is_data_available():
-        header()
-        body()
+        if is_data_loaded():
+            header()
+            body()
 
-    else:
-        upload_resume_header()
+        else:
+            upload_resume_header()
 
 
 if __name__ == '__main__':
