@@ -11,7 +11,7 @@ from utils import parse_pdf
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
-                    'education': 'Describe my degree type in more detail', 'skills': 'Add soft skills'}
+                    'education': 'Describe my degree type in more details'}
 
 
 def list_section(section_name, section_data):
@@ -86,7 +86,7 @@ def recruiter_subsection(section_name, section_example, item_id=0):
 
 def get_item_key(section_name, item_id=0):
     section_key = ''
-    if section_name in ['workExperience', 'Education']:
+    if section_name in ['workExperience', 'education']:
         key = 'description'
         section_key = f'{section_name}_{item_id}_{key}'
     elif section_name == 'summary':
@@ -95,7 +95,7 @@ def get_item_key(section_name, item_id=0):
 
 
 def update_resume_data(text_input, section_name, item_id=0):
-    if section_name in ['workExperience', 'Education']:
+    if section_name in ['workExperience', 'education']:
         key = 'description'
         st.session_state['resume_data'][section_name][item_id][key] = text_input
     elif section_name == 'summary':
