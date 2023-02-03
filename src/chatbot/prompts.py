@@ -1,5 +1,3 @@
-from langchain import OpenAI, PromptTemplate
-
 prompt_placeholder = '[$$$]'
 
 data_format = {'name': '', 'title': '',

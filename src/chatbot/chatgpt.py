@@ -6,7 +6,7 @@ from typing import Dict
 
 from revChatGPT.ChatGPT import Chatbot
 
-from .prompts import get_prompt
+from .prompts import get_prompt, data_format
 
 
 class Chatgpt:
@@ -81,38 +81,34 @@ class Chatgpt:
     def remove_prefix(input_string):
         return re.sub(r'\w+:\n', '', input_string)
 
-    def extract_data(self, string):
-        extracted_data = {}
+    def extract_json(self, json_string):
+        clean_dict = dict()
         for key, value in data_format.items():
-            if isinstance(value, dict):
-                extracted_data[key] = {}
-                for sub_key, sub_value in value.items():
-                    pattern = f'"{sub_key}":"(.*?)"'
-                    extracted = re.findall(pattern, string)
-                    if extracted:
-                        extracted_data[key][sub_key] = extracted[0]
-            elif isinstance(value, list) and isinstance(value[0], dict):
-                extracted_data[key] = []
-                for item in value:
-                    item_data = {}
-                    for sub_key, sub_value in item.items():
-                        pattern = f'"{sub_key}":"(.*?)"'
-                        extracted = re.findall(pattern, string)
-                        if extracted:
-                            item_data[sub_key] = extracted[0]
-                    if item_data:
-                        extracted_data[key].append(item_data)
-            elif isinstance(value, list) and isinstance(value[0], str):
-                pattern = f'"{key}":\["(.*?)"'
-                extracted = re.findall(pattern, string)
-                if extracted:
-                    extracted_data[key] = extracted[0].split('","')
-            else:
-                pattern = f"'{key}':.*',"
-                extracted = re.findall(pattern, string)
-                st.write(pattern)
-                st.write(string)
-                st.write(extracted)
-                if extracted:
-                    extracted_data[key] = extracted[0]
-        return extracted_data
+            pattern = ''
+            if isinstance(value, str):
+                pattern = f"'{key}':\s*'(\w*)'"
+            elif isinstance(value, list):
+                pattern = f"'{key}':\s*(\[.*\])"
+            elif isinstance(value, dict):
+                pattern = f"'{key}':" + "\s*(\{.*\})"
+
+            extracted_value = self.extract_value(pattern, json_string)
+            if extracted_value:
+                try:
+                    extracted_value = ast.literal_eval(extracted_value)
+                except Exception:
+                    pass
+
+            if not isinstance(extracted_value, type(value)):
+                extracted_value = ''
+            clean_dict[key] = extracted_value
+
+        return clean_dict
+
+    def extract_value(self, pattern, string):
+        match = re.search(pattern, string)
+
+        if match:
+            return match.group(1)
+        else:
+            return ''
