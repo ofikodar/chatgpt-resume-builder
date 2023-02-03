@@ -1,4 +1,5 @@
 import json
+import re
 import time
 from ast import literal_eval
 
@@ -123,13 +124,15 @@ def header():
 def body():
     section_dict = {'contactInfo': contact_info_section, 'summary': summary_section, 'workExperience': list_section,
                     'education': list_section, 'skills': skills_section}
-    tabs_names = [key.replace('_', ' ').title() for key in section_dict.keys()]
+    tabs_names = [key_to_tab_name(key) for key in section_dict.keys()]
     tabs = st.tabs(tabs_names)
     for tab, key in zip(tabs, section_dict):
         section_func = section_dict[key]
         with tab:
             section_func(key, st.session_state['resume_data'][key])
 
+def key_to_tab_name(input_string):
+    return re.sub(r'([A-Z])', r' \1', input_string).strip().title()
 
 def sidebar():
     with st.sidebar:
