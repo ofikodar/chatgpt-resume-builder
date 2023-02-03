@@ -72,6 +72,11 @@ class Chatgpt:
         return re.sub(r'\w+:\n', '', input_string)
 
     def parse_json_from_string(self, json_string):
+        try:
+            return ast.literal_eval(json_string)
+        except ValueError:
+            pass
+
         clean_dict = dict()
         for key, value in data_format.items():
             pattern = ''
@@ -86,7 +91,7 @@ class Chatgpt:
             if extracted_value:
                 try:
                     extracted_value = ast.literal_eval(extracted_value)
-                except Exception:
+                except ValueError:
                     pass
 
             if not isinstance(extracted_value, type(value)):
