@@ -69,8 +69,8 @@ class Chatgpt:
 
     def clean_section_response(self, input_string):
         try:
-            start = input_string.index("\"")
-            end = input_string.rindex("\"") + 1
+            start = input_string.index('"')
+            end = input_string.rindex('"') + 1
             input_string = input_string[start:end]
         except ValueError:
             pass
