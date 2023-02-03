@@ -1,5 +1,6 @@
 import ast
 import json
+import re
 from pathlib import Path
 from typing import Dict
 
@@ -48,7 +49,8 @@ class Chatgpt:
     def improve_section(self, section_text, user_request=''):
         chatgpt_input = get_prompt(section_text, user_request=user_request, output_type='section')
         response = self._ask(chatgpt_input)
-        return response
+        new_section_text = self.clean_section_response(response)
+        return new_section_text
 
     def _ask(self, chatgpt_input):
         response = self.chatbot.ask(chatgpt_input, conversation_id=self.conversation_id, parent_id=None)
@@ -57,7 +59,24 @@ class Chatgpt:
 
     @staticmethod
     def parse_json_from_string(input_string):
-        start = input_string.index("{")
-        end = input_string.rindex("}") + 1
-        json_string = input_string[start:end]
+        try:
+            start = input_string.index("{")
+            end = input_string.rindex("}") + 1
+            json_string = input_string[start:end]
+        except ValueError:
+            json_string = input_string
         return ast.literal_eval(json_string)
+
+    def clean_section_response(self, input_string):
+        try:
+            start = input_string.index("\"")
+            end = input_string.rindex("\"") + 1
+            input_string = input_string[start:end]
+        except ValueError:
+            pass
+        input_string = self.remove_prefix(input_string)
+        return input_string
+
+    @staticmethod
+    def remove_prefix(input_string):
+        return re.sub(r'\w+:\n', '', input_string)

@@ -40,7 +40,6 @@ def skills_section(section_name, skills_data):
                 _remove_skill(skill_id, skills_data)
 
     skill_subsection(section_name)
-    recruiter_subsection(section_name, section_example=section_examples[section_name])
     st.markdown('***')
 
 
@@ -71,16 +70,35 @@ def recruiter_subsection(section_name, section_example, item_id=0):
         trigger_key = 'Add a special request'
         user_request_template = f"{trigger_key} to the bot here... e.g. {section_example}."
 
-        user_request = cols[1].text_input("section_example",
-                           value=user_request_template,
-                           key=f'{section_name}_{item_id}_improve_manual', label_visibility='hidden')
+        user_request = cols[1].text_input("section_example", value=user_request_template,
+                                          key=f'{section_name}_{item_id}_improve_manual', label_visibility='hidden')
         if button_clicked:
             user_request = '' if trigger_key in user_request else user_request
-            key = 'description'
-            section_key = f'{section_name}_{item_id}_{key}'
+            section_key = get_item_key(section_name, item_id)
             section_text = st.session_state[section_key]
-            st.session_state['resume_data'][section_name][item_id][key] = st.session_state['chatbot'].improve_section(section_text,user_request)
+            new_section_text = st.session_state['chatbot'].improve_section(section_text, user_request)
+
+            update_resume_data(new_section_text, section_name, item_id)
             st.experimental_rerun()
+
+
+def get_item_key(section_name, item_id=0):
+    section_key = ''
+    if section_name in ['workExperience', 'Education']:
+        key = 'description'
+        section_key = f'{section_name}_{item_id}_{key}'
+    elif section_name == 'summary':
+        section_key = f'{section_name}'
+    return section_key
+
+
+def update_resume_data(text_input, section_name, item_id=0):
+    if section_name in ['workExperience', 'Education']:
+        key = 'description'
+        st.session_state['resume_data'][section_name][item_id][key] = text_input
+    elif section_name == 'summary':
+        section_key = f'{section_name}'
+        st.session_state['resume_data'][section_key] = text_input
 
 
 def summary_section(section_name, summary_data):
@@ -126,6 +144,7 @@ def sidebar():
 def _improve_all():
     print("Improving resume")
     st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
+    st.experimental_rerun()
 
 
 def _init_chatbot():
