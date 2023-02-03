@@ -80,3 +80,39 @@ class Chatgpt:
     @staticmethod
     def remove_prefix(input_string):
         return re.sub(r'\w+:\n', '', input_string)
+
+    def extract_data(self, string):
+        extracted_data = {}
+        for key, value in data_format.items():
+            if isinstance(value, dict):
+                extracted_data[key] = {}
+                for sub_key, sub_value in value.items():
+                    pattern = f'"{sub_key}":"(.*?)"'
+                    extracted = re.findall(pattern, string)
+                    if extracted:
+                        extracted_data[key][sub_key] = extracted[0]
+            elif isinstance(value, list) and isinstance(value[0], dict):
+                extracted_data[key] = []
+                for item in value:
+                    item_data = {}
+                    for sub_key, sub_value in item.items():
+                        pattern = f'"{sub_key}":"(.*?)"'
+                        extracted = re.findall(pattern, string)
+                        if extracted:
+                            item_data[sub_key] = extracted[0]
+                    if item_data:
+                        extracted_data[key].append(item_data)
+            elif isinstance(value, list) and isinstance(value[0], str):
+                pattern = f'"{key}":\["(.*?)"'
+                extracted = re.findall(pattern, string)
+                if extracted:
+                    extracted_data[key] = extracted[0].split('","')
+            else:
+                pattern = f"'{key}':.*',"
+                extracted = re.findall(pattern, string)
+                st.write(pattern)
+                st.write(string)
+                st.write(extracted)
+                if extracted:
+                    extracted_data[key] = extracted[0]
+        return extracted_data
