@@ -57,16 +57,6 @@ class Chatgpt:
         self.conversation_id = response['conversation_id']
         return response['message']
 
-    @staticmethod
-    def parse_json_from_string(input_string):
-        try:
-            start = input_string.index("{")
-            end = input_string.rindex("}") + 1
-            json_string = input_string[start:end]
-        except ValueError:
-            json_string = input_string
-        return ast.literal_eval(json_string)
-
     def clean_section_response(self, input_string):
         try:
             start = input_string.index('"')
@@ -81,7 +71,7 @@ class Chatgpt:
     def remove_prefix(input_string):
         return re.sub(r'\w+:\n', '', input_string)
 
-    def extract_json(self, json_string):
+    def parse_json_from_string(self, json_string):
         clean_dict = dict()
         for key, value in data_format.items():
             pattern = ''
