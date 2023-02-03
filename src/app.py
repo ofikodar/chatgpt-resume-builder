@@ -3,12 +3,13 @@ import re
 import time
 from ast import literal_eval
 
+import pdfkit
 import streamlit as st
 
 from chatbot.chatgpt import Chatgpt
 import asyncio
 
-from utils import parse_pdf
+from utils import parse_pdf, build_html_resume
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
@@ -131,8 +132,10 @@ def body():
         with tab:
             section_func(key, st.session_state['resume_data'][key])
 
+
 def key_to_tab_name(input_string):
     return re.sub(r'([A-Z])', r' \1', input_string).strip().title()
+
 
 def sidebar():
     with st.sidebar:
@@ -142,8 +145,15 @@ def sidebar():
 
         if is_data_loaded() and is_chatbot_loaded():
             st.button("Improve More", on_click=_improve_more)
-            st.download_button('Download PDF', file_name='output.json', mime="application/json",
-                               data=json.dumps(format_resume_data()))
+            st.download_button('Download PDF', file_name='out.pdf', mime="application/json", data=download_pdf())
+
+
+def download_pdf():
+    resume_data = format_resume_data()
+    html_resume = build_html_resume(resume_data)
+    options = {'page-size': 'A4', 'margin-top': '0.75in', 'margin-right': '0.75in', 'margin-bottom': '0.75in',
+               'margin-left': '0.75in', 'encoding': "UTF-8", 'no-outline': None}
+    return pdfkit.from_string(html_resume, options=options, css='src/css/main.css')
 
 
 def _improve_more():

@@ -1,6 +1,8 @@
 import argparse
+import json
 import os
 
+import pdfkit
 from spacy.cli import download
 
 from src.chatbot.chatgpt import Chatgpt
@@ -47,6 +49,18 @@ def main():
 
 
 if __name__ == '__main__':
-    data = resumeparse.read_file(r'C:\Users\ofiko\SolidCV\data\example_input.pdf')
-    pass
-    # main()
+    import os
+    with open('data.json',encoding='utf8') as f:
+        data = json.load(f)
+
+    html_resume = build_html_resume(data_format)
+    options = {
+        'page-size': 'A4',
+        'margin-top': '0.75in',
+        'margin-right': '0.75in',
+        'margin-bottom': '0.75in',
+        'margin-left': '0.75in',
+        'encoding': "UTF-8",
+        'no-outline': None
+    }
+    pdfkit.from_string(html_resume, 'out.pdf',options=options,css='css/main.css')
