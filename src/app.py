@@ -15,6 +15,8 @@ section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
                     'education': 'Describe my degree type in more details'}
 
+openai_key_info = 'https://platform.openai.com/account/api-keys'
+
 
 def list_section(section_name, section_data):
     description_key = 'description'
@@ -162,9 +164,22 @@ def _improve_more():
 
 
 def _init_chatbot():
-    if not st.session_state.get('chatbot'):
-        st.session_state['chatbot'] = Chatgpt('config.json')
-        print("Chatbot loaded successfully")
+    cols = st.columns([6, 1, 1])
+    api_key = cols[0].text_input("Enter OpenAI API key")
+    cols[1].markdown("#")
+    api_submit = cols[1].button("Submit")
+
+    cols[2].markdown("#")
+    get_info = cols[2].button("Get key")
+    if get_info:
+        st.info(f"Get your key at: {openai_key_info}")
+    if api_submit:
+        if Chatgpt.validate_api(api_key):
+            st.session_state['chatbot'] = Chatgpt(api_key)
+            st.experimental_rerun()
+
+        else:
+            st.error("Not valid API key - try again...")
 
 
 def is_chatbot_loaded():
@@ -248,7 +263,6 @@ def is_data_loaded():
 
 def _main():
     title()
-    _init_chatbot()
     if is_chatbot_loaded():
         sidebar()
 
@@ -258,6 +272,8 @@ def _main():
 
         else:
             upload_resume_header()
+    else:
+        _init_chatbot()
 
 
 if __name__ == '__main__':

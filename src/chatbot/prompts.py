@@ -7,7 +7,7 @@ data_format = {'name': '', 'title': '',
                'education': [{'degree': '', 'school': '', 'dates': '', 'description': ''}, ], 'skills': ['', '', '']}
 
 recruiter_prompt = 'You are a recruiter and a professional resume builder.'
-command_prompt = 'Re-write the input as professionally as possible, adding vital and valuable information.'
+command_prompt = 'Re-write the input as professionally as possible, adding vital, valuable information and skills.'
 user_request_prompt = f'{prompt_placeholder}'
 
 output_commands_prompts = dict()
