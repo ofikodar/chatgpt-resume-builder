@@ -28,4 +28,5 @@ COPY app.py /app/
 EXPOSE 7860
 
 # Set the command to run when the container starts
-CMD ["python3", "-m" ,"streamlit", "run", "app.py", "--server.port" , "7860"]
+CMD ["python3", "-m" ,"streamlit", "run", "app.py", "--server.port=7860", "--server.address=0.0.0.0", "--server.enableXsrfProtection=false"]
+
