@@ -6,7 +6,7 @@ from typing import Dict
 
 from revChatGPT.ChatGPT import Chatbot
 
-from .prompts import get_prompt
+from .prompts import get_prompt, data_format
 
 
 class Chatgpt:
@@ -57,16 +57,6 @@ class Chatgpt:
         self.conversation_id = response['conversation_id']
         return response['message']
 
-    @staticmethod
-    def parse_json_from_string(input_string):
-        try:
-            start = input_string.index("{")
-            end = input_string.rindex("}") + 1
-            json_string = input_string[start:end]
-        except ValueError:
-            json_string = input_string
-        return ast.literal_eval(json_string)
-
     def clean_section_response(self, input_string):
         try:
             start = input_string.index('"')
@@ -80,3 +70,40 @@ class Chatgpt:
     @staticmethod
     def remove_prefix(input_string):
         return re.sub(r'\w+:\n', '', input_string)
+
+    def parse_json_from_string(self, json_string):
+        try:
+            return ast.literal_eval(json_string)
+        except ValueError:
+            pass
+
+        clean_dict = dict()
+        for key, value in data_format.items():
+            pattern = ''
+            if isinstance(value, str):
+                pattern = f"'{key}':\s*'(\w*)'"
+            elif isinstance(value, list):
+                pattern = f"'{key}':\s*(\[.*\])"
+            elif isinstance(value, dict):
+                pattern = f"'{key}':" + "\s*(\{.*\})"
+
+            extracted_value = self.extract_value(pattern, json_string)
+            if extracted_value:
+                try:
+                    extracted_value = ast.literal_eval(extracted_value)
+                except ValueError:
+                    pass
+
+            if not isinstance(extracted_value, type(value)):
+                extracted_value = ''
+            clean_dict[key] = extracted_value
+
+        return clean_dict
+
+    def extract_value(self, pattern, string):
+        match = re.search(pattern, string)
+
+        if match:
+            return match.group(1)
+        else:
+            return ''
