@@ -162,9 +162,11 @@ def _improve_more():
 
 
 def _init_chatbot():
+    st.success("Enter OpenAI API key")
+    api_key = st.text_input("api_key", label_visibility='hidden')
+
     if not st.session_state.get('chatbot'):
-        st.session_state['chatbot'] = Chatgpt('config.json')
-        print("Chatbot loaded successfully")
+        st.session_state['chatbot'] = Chatgpt(api_key)
 
 
 def is_chatbot_loaded():
@@ -246,9 +248,9 @@ def is_data_loaded():
     return st.session_state.get('resume_data')
 
 
+
 def _main():
     title()
-    _init_chatbot()
     if is_chatbot_loaded():
         sidebar()
 
@@ -258,7 +260,8 @@ def _main():
 
         else:
             upload_resume_header()
-
+    else:
+        _init_chatbot()
 
 if __name__ == '__main__':
     _main()
