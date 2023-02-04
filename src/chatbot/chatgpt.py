@@ -64,36 +64,52 @@ class Chatgpt:
         response = self.chatbot.ask(chatgpt_input)
         answer = response['choices'][0]['text']
         logging.info("Received response from chatbot")
+        logging.info(f"Response: {answer}")
+
         return answer
 
     def parse_json_from_string(self, json_string):
+
         try:
             return ast.literal_eval(json_string)
         except Exception:
             logging.error("Error in parsing JSON string")
 
+        json_string = re.sub('\s+', ' ', json_string)
+        json_string = re.sub('"', "'", json_string)
+        json_string = re.sub(r"(\w)'(\w)", r"\1\'\2", json_string)
+
         clean_dict = dict()
         for key, value in data_format.items():
             pattern = ''
             if isinstance(value, str):
-                pattern = f"'{key}':\s*'(\w*)'"
+                pattern = f"'{key}':" + "\s*'(.*?)'"
             elif isinstance(value, list):
-                pattern = f"'{key}':\s*(\[.*\])"
+                pattern = f"'{key}':\s*(\[[^\[\]]*?\])"
             elif isinstance(value, dict):
-                pattern = f"'{key}':" + "\s*(\{.*\})"
+                pattern = f"'{key}':" + "\s*(\{[^{}]*?\})"
 
             extracted_value = self.extract_value(pattern, json_string)
+
             if extracted_value:
                 try:
                     extracted_value = ast.literal_eval(extracted_value)
                 except Exception:
-                    logging.error("Error in parsing extracted value")
+                    pass
 
             if not isinstance(extracted_value, type(value)):
-                extracted_value = ''
+                extracted_value = data_format[key]
             clean_dict[key] = extracted_value
 
         return clean_dict
+
+    def extract_value(self, pattern, string):
+        match = re.search(pattern, string)
+
+        if match:
+            return match.group(1)
+        else:
+            return ''
 
     def clean_section_response(self, input_string):
         try:
@@ -104,3 +120,7 @@ class Chatgpt:
             pass
         input_string = self.remove_prefix(input_string)
         return input_string
+
+    @staticmethod
+    def remove_prefix(input_string):
+        return re.sub(r'\w+:\n', '', input_string)
