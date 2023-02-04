@@ -1,18 +1,9 @@
-import ast
-import re
+from revChatGPT.Official import Chatbot
 
-from src.chatbot.prompts import data_format
-
-
-
-
+from src.chatbot.chatgpt import Chatgpt
 
 if __name__ == '__main__':
-    json_string = """
-    {'name': 'cs', 'title': '2', 'contactInfo': {'linkedin': '', 'github': '', 'email': '', 'address': '', 'phone': ''},
-     'summary': '','skills':['22','23','232'],
-      'workExperience': [{'title': '878', 'company': '', 'dates': '', 'description': ''}, {'title': '', 'company': '', 'dates': '777', 'description': ''}],
-        'education': [{'d}]
-    """
+    chatbot = Chatgpt('config.json')
+    y = chatbot.improve_section('My name is ofek i have an msc i lead NLP projects')
+    print(y)
 
-    html_resume = x(json_string)

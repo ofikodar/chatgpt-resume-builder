@@ -4,21 +4,20 @@ import re
 from pathlib import Path
 from typing import Dict
 
-from revChatGPT.ChatGPT import Chatbot
+from revChatGPT.Official import Chatbot
 
 from .prompts import get_prompt, data_format
 
 
 class Chatgpt:
     def __init__(self, config_path):
-        session_token = self.load_session_token(config_path)
-        self.conversation_id = None
-        self.chatbot = Chatbot(session_token, conversation_id=self.conversation_id, parent_id=None)
+        api_key = self.load_api_key(config_path)
+        self.chatbot = Chatbot(api_key)
 
     @staticmethod
-    def load_session_token(config_path) -> Dict:
+    def load_api_key(config_path):
         """
-        Load session token from config.json
+        Load api key from config.json
 
         Returns:
             Dict: session token
@@ -29,7 +28,7 @@ class Chatgpt:
 
         with open(config_file, 'r') as j_file:
             session_token = json.load(j_file)
-        return session_token
+        return session_token['api_key']
 
     def improve_resume(self, parsed_resume: str) -> Dict:
         """
@@ -53,9 +52,9 @@ class Chatgpt:
         return new_section_text
 
     def _ask(self, chatgpt_input):
-        response = self.chatbot.ask(chatgpt_input, conversation_id=self.conversation_id, parent_id=None)
-        self.conversation_id = response['conversation_id']
-        return response['message']
+        response = self.chatbot.ask(chatgpt_input)
+        answer = response['choices'][0]['text']
+        return answer
 
     def clean_section_response(self, input_string):
         try:
