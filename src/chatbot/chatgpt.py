@@ -13,6 +13,8 @@ from .prompts import get_prompt, data_format
 logging.basicConfig(filename='chatgpt.log', level=logging.INFO, format='%(asctime)s %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 
+openai_key_info = 'https://platform.openai.com/account/api-keys'
+
 
 class Chatgpt:
     def __init__(self, api_key):
