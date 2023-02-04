@@ -4,6 +4,8 @@ import re
 from pathlib import Path
 from typing import Dict
 import logging
+
+import requests
 from revChatGPT.Official import Chatbot
 
 from .prompts import get_prompt, data_format
@@ -12,11 +14,18 @@ logging.basicConfig(filename='chatgpt.log', level=logging.INFO, format='%(asctim
                     datefmt='%m/%d/%Y %I:%M:%S %p')
 
 
-
 class Chatgpt:
     def __init__(self, api_key):
+        self.validate_api(api_key)
         self.chatbot = Chatbot(api_key)
         logging.info("API key loaded successfully")
+
+    @staticmethod
+    def validate_api(api_key):
+        if api_key and api_key.startswith("sk-") and len(api_key) > 50:
+            response = requests.get("https://api.openai.com/v1/engines", headers={"Authorization": f"Bearer {api_key}"})
+            return response.status_code == 200
+        return False
 
     @staticmethod
     def load_api_key(config_path):
@@ -95,4 +104,3 @@ class Chatgpt:
             pass
         input_string = self.remove_prefix(input_string)
         return input_string
-

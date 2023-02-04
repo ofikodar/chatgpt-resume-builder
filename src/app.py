@@ -162,11 +162,17 @@ def _improve_more():
 
 
 def _init_chatbot():
-    st.success("Enter OpenAI API key")
-    api_key = st.text_input("api_key", label_visibility='hidden')
+    cols = st.columns([3, 1])
+    api_key = cols[0].text_input("Enter OpenAI API key")
+    cols[1].markdown("#")
+    submit = cols[1].button("submit")
+    if submit:
+        if Chatgpt.validate_api(api_key):
+            st.session_state['chatbot'] = Chatgpt(api_key)
+            st.experimental_rerun()
 
-    if not st.session_state.get('chatbot'):
-        st.session_state['chatbot'] = Chatgpt(api_key)
+        else:
+            st.error("Not valid API key - try again...")
 
 
 def is_chatbot_loaded():
@@ -248,7 +254,6 @@ def is_data_loaded():
     return st.session_state.get('resume_data')
 
 
-
 def _main():
     title()
     if is_chatbot_loaded():
@@ -262,6 +267,7 @@ def _main():
             upload_resume_header()
     else:
         _init_chatbot()
+
 
 if __name__ == '__main__':
     _main()
