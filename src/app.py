@@ -15,6 +15,8 @@ section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
                     'education': 'Describe my degree type in more details'}
 
+openai_key_info = 'https://platform.openai.com/account/api-keys'
+
 
 def list_section(section_name, section_data):
     description_key = 'description'
@@ -162,11 +164,16 @@ def _improve_more():
 
 
 def _init_chatbot():
-    cols = st.columns([3, 1])
+    cols = st.columns([6, 1, 1])
     api_key = cols[0].text_input("Enter OpenAI API key")
     cols[1].markdown("#")
-    submit = cols[1].button("submit")
-    if submit:
+    api_submit = cols[1].button("Submit")
+
+    cols[2].markdown("#")
+    get_info = cols[2].button("Get key")
+    if get_info:
+        st.info(f"Get your key at: {openai_key_info}")
+    if api_submit:
         if Chatgpt.validate_api(api_key):
             st.session_state['chatbot'] = Chatgpt(api_key)
             st.experimental_rerun()
