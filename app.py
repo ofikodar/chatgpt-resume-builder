@@ -1,15 +1,10 @@
-import json
 import re
-import time
-from ast import literal_eval
 
 import pdfkit
 import streamlit as st
 
-from chatbot.chatgpt import Chatgpt
-import asyncio
-
-from utils import parse_pdf, build_html_resume
+from src.chatbot.chatgpt import Chatgpt
+from src.utils import parse_pdf, build_html_resume
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
