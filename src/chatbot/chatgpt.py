@@ -8,7 +8,7 @@ from typing import Dict
 import requests
 from revChatGPT.Official import Chatbot
 
-from .prompts import get_prompt, data_format
+from src.chatbot.prompts import get_prompt, data_format
 
 logging.basicConfig(filename='chatgpt.log', level=logging.INFO, format='%(asctime)s %(message)s',
                     datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -117,9 +117,8 @@ class Chatgpt:
 
     def clean_section_response(self, input_string):
         try:
-            start = input_string.index('"')
-            end = input_string.rindex('"') + 1
-            input_string = input_string[start:end]
+            input_string = re.sub('^\W*"', "", input_string)
+            input_string = re.sub('"\W*$', "", input_string)
         except ValueError:
             pass
         input_string = self.remove_prefix(input_string)
