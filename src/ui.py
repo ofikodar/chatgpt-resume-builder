@@ -50,9 +50,6 @@ def sidebar():
         if uploaded_file and is_new_file(uploaded_file):
             upload(uploaded_file)
 
-        if st.session_state.get('pdf_file'):
-            improve_resume(st.session_state['pdf_file'])
-
         if is_data_loaded():
             st.button("Improve More", on_click=improve_resume)
             st.download_button('Download PDF', file_name='out.pdf', mime="application/json", data=download_pdf())

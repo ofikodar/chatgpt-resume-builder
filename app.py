@@ -16,6 +16,5 @@ def main():
         init_chatbot()
 
 
-
 if __name__ == '__main__':
     main()
