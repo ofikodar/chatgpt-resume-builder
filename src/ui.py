@@ -35,8 +35,8 @@ def user_info():
 
 
 def upload_resume_header():
-    st.session_state['user_info'] = init_user_info(st.success, "Upload PDF Resume - Let the magic begin... \n\n"
-                                                               "This may take a bit, grub a warm cup of coffee while we working.")
+    st.session_state['user_info'] = init_user_info(st.success, "Upload PDF Resume - Let the magic begin. \n\n"
+                                                               "This may take a bit... Grub a warm cup of coffee while we working :)")
 
 
 def upload(uploaded_file):

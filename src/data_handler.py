@@ -51,7 +51,7 @@ def format_resume_data():
 
     resume_data['name'] = current_state.get('name', '')
     resume_data['title'] = current_state.get('title', '')
-
+    st.write(st.session_state)
     contact_info_keys = ['linkedin', 'github', 'email', 'address']
     for key in contact_info_keys:
         contact_info[key] = current_state.get(f'contactInfo_{key}', '')
