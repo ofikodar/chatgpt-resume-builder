@@ -1,13 +1,9 @@
 import pdfkit
 import streamlit as st
 
+from src.exceptions import PDFSizeException
 from src.pdf_handler import build_html_resume, parse_pdf
 from src.utils import count_entries
-
-
-class PDFSizeException(Exception):
-    """Raised when the input value is less than 3"""
-    pass
 
 
 def init_resume(uploaded_file):

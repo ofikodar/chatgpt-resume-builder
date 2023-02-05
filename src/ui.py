@@ -2,6 +2,7 @@ import streamlit as st
 
 from src.chatbot.chatgpt import openai_key_info, Chatgpt
 from src.data_handler import improve_resume, init_resume, download_pdf, update_resume_data, PDFSizeException
+from src.exceptions import ChatbotInitException
 from src.utils import is_new_file, is_data_loaded, key_to_tab_name, get_item_key, init_user_info
 
 section_examples = {'summary': 'I have passion for new tech',
@@ -16,6 +17,12 @@ def title():
 def resume_header():
     st.text_input('name', st.session_state.resume_data['name'], key="name")
     st.text_input('title', st.session_state.resume_data['title'], key="title")
+
+
+def unknown_error():
+    st.session_state['user_info'] = init_user_info(error_info, "It's just a glitch in the matrix."
+                                                               " Try hitting refresh, and if that doesn't work, just imagine yourself in a peaceful place.")
+    user_info()
 
 
 def user_info():
@@ -78,7 +85,12 @@ def init_chatbot():
         st.info(f"Get your key at: {openai_key_info}")
     if api_submit:
         if Chatgpt.validate_api(api_key):
-            st.session_state['chatbot'] = Chatgpt(api_key)
+            try:
+                st.session_state['chatbot'] = Chatgpt(api_key)
+            except ChatbotInitException:
+                st.session_state['user_info'] = init_user_info(error_info,
+                                                               "Error with Chatbot loadin, please refresh...")
+
             st.experimental_rerun()
 
         else:

@@ -4,16 +4,19 @@ from src.utils import is_chatbot_loaded
 
 def main():
     title()
-    if is_chatbot_loaded():
-        sidebar()
+    try:
+        if is_chatbot_loaded():
+            sidebar()
 
-        if is_data_loaded():
-            resume_header()
-            body()
+            if is_data_loaded():
+                resume_header()
+                body()
+            else:
+                user_info()
         else:
-            user_info()
-    else:
-        init_chatbot()
+            init_chatbot()
+    except:
+        unknown_error()
 
 
 if __name__ == '__main__':

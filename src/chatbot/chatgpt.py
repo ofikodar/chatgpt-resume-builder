@@ -63,11 +63,13 @@ class Chatgpt:
 
     def _ask(self, chatgpt_input):
         logging.info("Asking chatbot for response")
-        response = self.chatbot.ask(chatgpt_input)
-        answer = response['choices'][0]['text']
-        logging.info("Received response from chatbot")
-        logging.info(f"Response: {answer}")
-
+        try:
+            response = self.chatbot.ask(chatgpt_input)
+            answer = response['choices'][0]['text']
+            logging.info("Received response from chatbot")
+            logging.info(f"Response: {answer}")
+        except Exception:
+            answer = ""
         return answer
 
     def parse_json_from_string(self, json_string):
