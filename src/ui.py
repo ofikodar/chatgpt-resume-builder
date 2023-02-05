@@ -35,7 +35,8 @@ def user_info():
 
 
 def upload_resume_header():
-    st.session_state['user_info'] = init_user_info(success_info, "Upload PDF Resume - Let the magic begin...")
+    st.session_state['user_info'] = init_user_info(st.success, "Upload PDF Resume - Let the magic begin... \n\n"
+                                                               "This may take a bit, grub a warm cup of coffee while we working.")
 
 
 def upload(uploaded_file):
@@ -53,9 +54,10 @@ def upload(uploaded_file):
 
 def sidebar():
     with st.sidebar:
-        uploaded_file = st.file_uploader('Upload PDF Resume', type="PDF")
+        uploaded_file = st.file_uploader('Upload PDF Resume', type=["PDF"])
         if uploaded_file and is_new_file(uploaded_file):
             upload(uploaded_file)
+            st.experimental_rerun()
 
         if is_data_loaded():
             st.button("Improve More", on_click=improve_resume)

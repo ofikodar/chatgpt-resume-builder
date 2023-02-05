@@ -25,6 +25,8 @@ def update_resume_data(text_input, section_name, item_id=0):
 
 def download_pdf():
     resume_data = format_resume_data()
+    if not resume_data['name']:
+        resume_data = st.session_state['resume_data']
     html_resume = build_html_resume(resume_data)
     options = {'page-size': 'A4', 'margin-top': '0.75in', 'margin-right': '0.75in', 'margin-bottom': '0.75in',
                'margin-left': '0.75in', 'encoding': "UTF-8", 'no-outline': None}
