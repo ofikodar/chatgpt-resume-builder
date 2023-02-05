@@ -1,38 +1,35 @@
-import PyPDF2
-from jinja2 import FileSystemLoader, Environment
+import re
+
+import streamlit as st
 
 
-def parse_pdf(pdf_file):
-    if pdf_file is isinstance(pdf_file, str):
-        with open(pdf_file, "rb") as file:
-            return _parse(file)
-    else:
-        return _parse(pdf_file)
+def is_chatbot_loaded():
+    return st.session_state.get('chatbot')
 
 
-def _parse(file):
-    reader = PyPDF2.PdfReader(file)
-    pdf_text = []
-    # Iterate over each page
-    for page_number in range(len(reader.pages)):
-        # Get the current page
-        page = reader.pages[page_number]
-
-        # Extract the text from the page
-        page_text = page.extract_text()
-
-        pdf_text.append(page_text)
-    pdf_text = '\n'.join(pdf_text)
-    return pdf_text
+def is_new_file(uploaded_file):
+    return uploaded_file.id != st.session_state.get('file_id', '')
 
 
-def build_html_resume(data):
-    env = Environment(loader=FileSystemLoader('src/templates'))
-    template = env.get_template('resume.html')
-    html_resume = template.render(data)
-    return html_resume
+def is_data_loaded():
+    return st.session_state.get('resume_data')
 
 
-def export_html(html_resume, output_path):
-    with open(output_path, 'w', encoding='utf8') as f:
-        f.write(html_resume)
+def key_to_tab_name(input_string):
+    return re.sub(r'([A-Z])', r' \1', input_string).strip().title()
+
+
+def count_entries(input_dict, entry_type):
+    max_index = max([int(key.split("_")[1]) for key in input_dict.keys() if key.startswith(f"{entry_type}_")],
+                    default=0)
+    return max_index + 1
+
+
+def get_item_key(section_name, item_id=0):
+    section_key = ''
+    if section_name in ['workExperience', 'education']:
+        key = 'description'
+        section_key = f'{section_name}_{item_id}_{key}'
+    elif section_name == 'summary':
+        section_key = f'{section_name}'
+    return section_key
