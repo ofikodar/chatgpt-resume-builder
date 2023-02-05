@@ -23,8 +23,12 @@ def update_resume_data(text_input, section_name, item_id=0):
         st.session_state['resume_data'][section_key] = text_input
 
 
+@st.cache
 def download_pdf():
-    resume_data = format_resume_data()
+    if st.session_state.get('name'):
+        resume_data = format_resume_data()
+    else:
+        resume_data = st.session_state['resume_data']
     html_resume = build_html_resume(resume_data)
     options = {'page-size': 'A4', 'margin-top': '0.75in', 'margin-right': '0.75in', 'margin-bottom': '0.75in',
                'margin-left': '0.75in', 'encoding': "UTF-8", 'no-outline': None}
@@ -38,7 +42,6 @@ def improve_resume(resume_data=None):
         st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
 
 
-@st.cache
 def format_resume_data():
     current_state = st.session_state
     resume_data = {}
@@ -53,6 +56,7 @@ def format_resume_data():
     contact_info_keys = ['linkedin', 'github', 'email', 'address']
     for key in contact_info_keys:
         contact_info[key] = current_state.get(f'contactInfo_{key}', '')
+
     resume_data['contactInfo'] = contact_info
 
     resume_data['summary'] = current_state.get('summary', '')

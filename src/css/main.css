@@ -24,6 +24,8 @@ html
 
 body
 {
+  	font-family:Open Sans, sans-serif;
+
     top: 0px;
 	-webkit-font-smoothing:antialiased;
 	font-family:Lora, serif;
@@ -44,7 +46,7 @@ body
 
 h1
 {
-	color:rgba(0,0,0,1);
+color: #145DA0;
 }
 
 .wrapper
@@ -57,6 +59,7 @@ h1
 
 .left
 {
+    	font-family:Open Sans, sans-serif;
 
 left: 0px;
 	height:100%;
@@ -68,11 +71,13 @@ left: 0px;
 
 .right
 {
+    	font-family:Open Sans, sans-serif;
+
 right: 0px;
 position: absolute;
 	text-align:center;
-	background-color:rgba(200,0,0,.025);
-	border-left:1px solid rgba(230,0,0,.05);
+	background-color:rgba(0, 0, 0,0.1);
+	border-left:1px solid rgba(0,0,0,.1);
 
 	height:100%;
 	width:30%;
@@ -81,11 +86,35 @@ position: absolute;
 
 }
 
+.right h1
+{
+
+color: #145DA0;
+}
+
+.right h2
+{
+
+color: #145DA0;
+}
+
+
+
+.right p
+{
+color: #145DA0;
+}
+
+.left p
+{
+color: #145DA0;
+}
 
 
 .name-hero
 {
 	background:rgba(0,0,0,.001);
+	margin:0px 1px 0 0;
 
 	width:85%;
 }
@@ -108,9 +137,34 @@ position: absolute;
 .name-hero h3
 {
 	font-family:Open Sans, sans-serif;
+
 	font-size:1.5em;
 	text-align:center;
 	margin:0px auto;
+   padding-top: -50 px;
+}
+
+
+.title h3
+{
+	font-family:Open Sans, sans-serif;
+
+	font-size:1.5em;
+	text-align:center;
+	margin:0px auto;
+   color:rgba(128, 128, 128,0.5);
+   padding-top: -50 px;
+}
+
+.name-hero title
+{
+	font-family:Open Sans, sans-serif;
+
+	font-size:1.5em;
+	text-align:center;
+	margin:0px auto;
+   color:rgba(128, 128, 128,0.5);
+   padding-top: -0 px;
 }
 
 .name-hero h1 em
@@ -122,6 +176,7 @@ position: absolute;
 
 .name-hero p
 {
+    font-family:Open Sans, sans-serif;
 	color:rgba(0,0,0,1);
 	font-size:.75em;
 	line-height:1.5;
@@ -133,9 +188,12 @@ position: absolute;
 {
     font-size:1.5em;
 	margin:0 auto;
+	color: #145DA0;
 
 	width:85%;
 }
+
+
 
 .inner
 {
@@ -156,7 +214,7 @@ position: absolute;
 
 .inner p em
 {
-	color:rgba(0,0,0,1);
+color: #145DA0;
 	font-style:normal;
 }
 
@@ -175,6 +233,7 @@ ul
 
 .skill-set
 {
+  	font-family:Open Sans, sans-serif;
 
 	color:rgba(0,0,0,1);
 	list-style:none;
