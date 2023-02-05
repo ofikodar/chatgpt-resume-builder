@@ -1,8 +1,8 @@
 import streamlit as st
 
 from src.chatbot.chatgpt import openai_key_info, Chatgpt
-from src.data_handler import improve_more, init_resume, download_pdf, update_resume_data
-from src.utils import is_new_file, is_chatbot_loaded, is_data_loaded, key_to_tab_name, get_item_key
+from src.data_handler import improve_resume, init_resume, download_pdf, update_resume_data, PDFSizeException
+from src.utils import is_new_file, is_data_loaded, key_to_tab_name, get_item_key, init_user_info
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
@@ -13,23 +13,48 @@ def title():
     st.title("ChatCV - AI Resume Builder")
 
 
-def header():
+def resume_header():
     st.text_input('name', st.session_state.resume_data['name'], key="name")
     st.text_input('title', st.session_state.resume_data['title'], key="title")
 
 
+def user_info():
+    if not st.session_state.get('user_info'):
+        upload_resume_header()
+
+    message_type = st.session_state['user_info']['message_type']
+    message = st.session_state['user_info']['message']
+    message_type(message)
+
+
 def upload_resume_header():
-    st.success("Upload PDF Resume - Let the magic begin...")
+    st.session_state['user_info'] = init_user_info(success_info, "Upload PDF Resume - Let the magic begin...")
+
+
+def upload(uploaded_file):
+    try:
+        resume_data = init_resume(uploaded_file)
+        st.session_state['user_info'] = init_user_info(success_info, "Working on it...")
+        improve_resume(resume_data)
+
+    except PDFSizeException:
+        st.session_state['user_info'] = init_user_info(error_info, "PDF size max size is 4, try upload again...")
+
+    except Exception:
+        st.session_state['user_info'] = init_user_info(error_info, "PDF upload, try upload again...")
 
 
 def sidebar():
     with st.sidebar:
         uploaded_file = st.file_uploader('Upload PDF Resume', type="PDF")
-        if uploaded_file and is_new_file(uploaded_file) and is_chatbot_loaded():
-            init_resume(uploaded_file)
+        if uploaded_file and is_new_file(uploaded_file):
+            upload(uploaded_file)
 
-        if is_data_loaded() and is_chatbot_loaded():
-            st.button("Improve More", on_click=improve_more)
+        if st.session_state.get('pdf_file'):
+            improve_resume(st.session_state['pdf_file'])
+
+        if is_data_loaded():
+            st.button("Improve More", on_click=improve_resume)
             st.download_button('Download PDF', file_name='out.pdf', mime="application/json", data=download_pdf())
 
 
@@ -139,3 +164,11 @@ def recruiter_subsection(section_name, section_example, item_id=0):
 
             update_resume_data(new_section_text, section_name, item_id)
             st.experimental_rerun()
+
+
+def success_info(message):
+    st.success(message)
+
+
+def error_info(message):
+    st.error(message)

@@ -13,8 +13,9 @@ def parse_pdf(pdf_file):
 def _parse(file):
     reader = PyPDF2.PdfReader(file)
     pdf_text = []
+    num_pages = len(reader.pages)
     # Iterate over each page
-    for page_number in range(len(reader.pages)):
+    for page_number in range(num_pages):
         # Get the current page
         page = reader.pages[page_number]
 
@@ -23,7 +24,7 @@ def _parse(file):
 
         pdf_text.append(page_text)
     pdf_text = '\n'.join(pdf_text)
-    return pdf_text
+    return pdf_text, num_pages
 
 
 def build_html_resume(data):

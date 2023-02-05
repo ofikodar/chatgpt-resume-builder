@@ -8,13 +8,13 @@ def main():
         sidebar()
 
         if is_data_loaded():
-            header()
+            resume_header()
             body()
-
         else:
-            upload_resume_header()
+            user_info()
     else:
         init_chatbot()
+
 
 
 if __name__ == '__main__':

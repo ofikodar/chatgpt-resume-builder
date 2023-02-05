@@ -33,3 +33,10 @@ def get_item_key(section_name, item_id=0):
     elif section_name == 'summary':
         section_key = f'{section_name}'
     return section_key
+
+
+def init_user_info(message_type, message):
+    return {
+        'message_type': message_type,
+        'message': message
+    }

@@ -5,12 +5,17 @@ from src.pdf_handler import build_html_resume, parse_pdf
 from src.utils import count_entries
 
 
-def init_resume(uploaded_file):
-    resume_data = parse_pdf(uploaded_file)
-    st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(resume_data)
-    st.session_state['file_id'] = uploaded_file.id
-    st.experimental_rerun()
+class PDFSizeException(Exception):
+    """Raised when the input value is less than 3"""
+    pass
 
+
+def init_resume(uploaded_file):
+    resume_data, num_pages = parse_pdf(uploaded_file)
+    if num_pages > 3:
+        raise PDFSizeException
+    st.session_state['file_id'] = uploaded_file.id
+    return resume_data
 
 def update_resume_data(text_input, section_name, item_id=0):
     if section_name in ['workExperience', 'education']:
@@ -29,9 +34,13 @@ def download_pdf():
     return pdfkit.from_string(html_resume, options=options, css='src/css/main.css')
 
 
-def improve_more():
+def improve_resume(resume_data=None):
     print("Improving resume")
-    st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
+    if resume_data is not None:
+        st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(resume_data)
+    else:
+        st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
+    st.experimental_rerun()
 
 
 @st.cache
