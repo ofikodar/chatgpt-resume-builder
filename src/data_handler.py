@@ -1,15 +1,17 @@
 import pdfkit
 import streamlit as st
 
+from src.exceptions import PDFSizeException
 from src.pdf_handler import build_html_resume, parse_pdf
 from src.utils import count_entries
 
 
 def init_resume(uploaded_file):
-    resume_data = parse_pdf(uploaded_file)
-    st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(resume_data)
+    resume_data, num_pages = parse_pdf(uploaded_file)
+    if num_pages > 3:
+        raise PDFSizeException
     st.session_state['file_id'] = uploaded_file.id
-    st.experimental_rerun()
+    return resume_data
 
 
 def update_resume_data(text_input, section_name, item_id=0):
@@ -29,9 +31,11 @@ def download_pdf():
     return pdfkit.from_string(html_resume, options=options, css='src/css/main.css')
 
 
-def improve_more():
-    print("Improving resume")
-    st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
+def improve_resume(resume_data=None):
+    if resume_data is not None:
+        st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(resume_data)
+    else:
+        st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
 
 
 @st.cache

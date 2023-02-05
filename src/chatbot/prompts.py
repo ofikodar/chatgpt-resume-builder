@@ -6,8 +6,10 @@ data_format = {'name': '', 'title': '',
                                   {'title': '', 'company': '', 'dates': '', 'description': ''}, ],
                'education': [{'degree': '', 'school': '', 'dates': '', 'description': ''}, ], 'skills': ['', '', '']}
 
-recruiter_prompt = 'You are a recruiter and a professional resume builder.'
-command_prompt = 'Re-write the input as professionally as possible, adding vital, valuable information and skills.'
+recruiter_prompt = 'You are a professional resume builder and a recruiter.\n'
+command_prompt = 'Re-write the input as professionally as possible, adding vital, valuable information and skills.\n' \
+                 'Enhance the input to showcase the relevant education, experience, and skills in a professional manner to effectively demonstrate value to potential employers.\n' \
+                 f'Do it for every value in your output {str(list(data_format))}.  '
 user_request_prompt = f'{prompt_placeholder}'
 
 output_commands_prompts = dict()
