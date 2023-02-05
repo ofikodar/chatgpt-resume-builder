@@ -2,14 +2,11 @@ import streamlit as st
 
 from src.chatbot.chatgpt import openai_key_info, Chatgpt
 from src.data_handler import improve_more, init_resume, download_pdf, update_resume_data
-from src.utils import is_new_file, is_chatbot_loaded, is_data_loaded, key_to_tab_name, remove_from_list, get_item_key
+from src.utils import is_new_file, is_chatbot_loaded, is_data_loaded, key_to_tab_name, get_item_key
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
                     'education': 'Describe my degree type in more details'}
-
-
-
 
 
 def title():
@@ -96,7 +93,7 @@ def skills_section(section_name, skills_data):
             cols[item_id * 2].text_input(' ', value=skill, key=f'{section_name}_{skill_id}', label_visibility='hidden')
             cols[item_id * 2 + 1].markdown('## ')
             if cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}remove_from_list'):
-                remove_from_list(skill_id, skills_data)
+                del skills_data[skill_id]
                 st.experimental_rerun()
 
     skill_subsection(section_name)

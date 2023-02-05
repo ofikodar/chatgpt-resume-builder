@@ -19,10 +19,6 @@ def key_to_tab_name(input_string):
     return re.sub(r'([A-Z])', r' \1', input_string).strip().title()
 
 
-def remove_from_list(index, list_data):
-    del list_data[index]
-
-
 def count_entries(input_dict, entry_type):
     max_index = max([int(key.split("_")[1]) for key in input_dict.keys() if key.startswith(f"{entry_type}_")],
                     default=0)

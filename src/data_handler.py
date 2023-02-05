@@ -34,6 +34,7 @@ def improve_more():
     st.session_state['resume_data'] = st.session_state['chatbot'].improve_resume(st.session_state['resume_data'])
 
 
+@st.cache
 def format_resume_data():
     current_state = st.session_state
     resume_data = {}
