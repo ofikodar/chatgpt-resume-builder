@@ -2,9 +2,8 @@ prompt_placeholder = '[$$$]'
 
 data_format = {'name': '', 'title': '',
                'contactInfo': {'linkedin': '', 'github': '', 'email': '', 'address': '', 'phone': ''}, 'summary': '',
-               'workExperience': [{'title': '', 'company': '', 'dates': '', 'description': ''},
-                                  {'title': '', 'company': '', 'dates': '', 'description': ''}, ],
-               'education': [{'degree': '', 'school': '', 'dates': '', 'description': ''}, ], 'skills': ['', '', '']}
+               'workExperience': [{'title': '', 'company': '', 'dates': '', 'description': ''}, ],
+               'education': [{'degree': '', 'school': '', 'dates': '', 'description': ''}, ], 'skills': ['', ]}
 
 recruiter_prompt = 'You are a professional resume builder and a recruiter.\n'
 command_prompt = 'Re-write the input as professionally as possible, adding vital, valuable information and skills.\n' \
