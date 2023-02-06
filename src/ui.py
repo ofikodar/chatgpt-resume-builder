@@ -174,12 +174,13 @@ def recruiter_subsection(section_name, section_example, item_id=0):
 
 
 def skills_section(section_name, skills_data):
+    [skills_data.remove(skill) for skill in skills_data if not skill]
+
     num_columns = 3
     for skills_row in range(0, len(skills_data), num_columns):
         cols = st.columns([3, 1] * num_columns)
         skills_row_names = skills_data[skills_row: skills_row + num_columns]
         for item_id, skill in enumerate(skills_row_names):
-
             skill_id = skills_row + item_id
             cols[item_id * 2].text_input(' ', value=skill, key=f'{section_name}_{skill_id}', label_visibility='hidden')
             cols[item_id * 2 + 1].markdown('## ')
