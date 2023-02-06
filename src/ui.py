@@ -8,7 +8,8 @@ from src.utils import is_new_file, is_data_loaded, key_to_tab_name, get_item_key
 
 section_examples = {'summary': 'I have passion for new tech',
                     'workExperience': 'Tell about my ability to lead projects',
-                    'education': 'Describe my degree type in more details'}
+                    'education': 'Describe my degree type in more details',
+                    'contactInfo': 'phone, Linkedin, etc.'}
 
 
 def title():
@@ -151,44 +152,6 @@ def edit_list_subsection(section_name, section_data, item_id):
             st.experimental_rerun()
 
 
-def skills_section(section_name, skills_data):
-    num_columns = 3
-    for skills_row in range(0, len(skills_data), num_columns):
-        cols = st.columns([3, 1] * num_columns)
-        skills_row_names = skills_data[skills_row: skills_row + num_columns]
-        for item_id, skill in enumerate(skills_row_names):
-            skill_id = skills_row + item_id
-            cols[item_id * 2].text_input(' ', value=skill, key=f'{section_name}_{skill_id}', label_visibility='hidden')
-            cols[item_id * 2 + 1].markdown('## ')
-            if cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_from_list') and len(
-                    skills_data) > 0:
-                del skills_data[skill_id]
-                st.experimental_rerun()
-
-    skill_subsection(section_name)
-    st.markdown('***')
-
-
-def contact_info_section(section_name, info_data):
-    for key, value in info_data.items():
-        if value:
-            st.text_input(key.title(), value, key=f'{section_name}_{key}')
-    st.markdown('***')
-
-
-def skill_subsection(section_name, item_id=0):
-    key = f'{section_name}_{item_id}_add_skill'
-    cols = st.columns([12, 1])
-    new_skill = cols[0].text_input("Add skill", key=key)
-    cols[1].markdown('##')
-    clicked = cols[1].button("\+")
-    if clicked and new_skill:
-        st.write(new_skill)
-        st.session_state['resume_data'][section_name].append(new_skill)
-        st.write(st.session_state['resume_data'][section_name])
-        st.experimental_rerun()
-
-
 def recruiter_subsection(section_name, section_example, item_id=0):
     with st.container():
         cols = st.columns([3, 10], gap='small')
@@ -208,6 +171,72 @@ def recruiter_subsection(section_name, section_example, item_id=0):
 
             update_resume_data(new_section_text, section_name, item_id)
             st.experimental_rerun()
+
+
+def skills_section(section_name, skills_data):
+    num_columns = 3
+    for skills_row in range(0, len(skills_data), num_columns):
+        cols = st.columns([3, 1] * num_columns)
+        skills_row_names = skills_data[skills_row: skills_row + num_columns]
+        for item_id, skill in enumerate(skills_row_names):
+
+            skill_id = skills_row + item_id
+            cols[item_id * 2].text_input(' ', value=skill, key=f'{section_name}_{skill_id}', label_visibility='hidden')
+            cols[item_id * 2 + 1].markdown('## ')
+            if cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_from_list'):
+                del skills_data[skill_id]
+                st.experimental_rerun()
+
+    skill_subsection(section_name)
+    st.markdown('***')
+
+
+def skill_subsection(section_name, item_id=0):
+    key = f'{section_name}_{item_id}_add_skill'
+    cols = st.columns([12, 1])
+    new_skill = cols[0].text_input("Add skill", key=key)
+    cols[1].markdown('##')
+    clicked = cols[1].button("\+")
+    if clicked and new_skill:
+        st.session_state['resume_data'][section_name].append(new_skill)
+        st.experimental_rerun()
+
+
+def contact_info_section(section_name, info_data):
+    keys = sorted(info_data.keys())
+    for key in keys:
+        value = info_data[key]
+        cols = st.columns([12, 1])
+        cols[0].text_input(key.title(), value, key=f'{section_name}_{key}')
+        cols[1].markdown('##')
+        clicked = cols[1].button('\-', key=f'{section_name}_{key}_remove')
+        if clicked:
+            del info_data[key]
+            st.experimental_rerun()
+
+    add_contact_subsection(section_name, info_data)
+    st.markdown('***')
+
+
+def add_contact_subsection(section_name, info_data):
+    st.markdown('***')
+
+    with st.container():
+        cols = st.columns([12, 1])
+        new_key = cols[0].text_input('Add new details', value=f"e.g, {section_examples[section_name]}")
+        cols[1].markdown('##')
+        clicked = cols[1].button('\+', key=f'{section_name}_add_details')
+
+        if clicked and new_key:
+            info_data[new_key] = ''
+            st.experimental_rerun()
+    # if remove_col.button('Delete', key=f'{section_name}_{item_id}_remove_from_list') and len(section_data) > 1:
+    #     del section_data[item_id]
+    #     st.experimental_rerun()
+    #
+    # if add_col.button('Add', key=f'{section_name}_{item_id}_add_to_list') and len(section_data) < 10:
+    #     section_data.append(data_format[section_name][0])
+    #     st.experimental_rerun()
 
 
 def success_info(message):
