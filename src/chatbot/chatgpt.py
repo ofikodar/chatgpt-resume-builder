@@ -18,7 +18,6 @@ openai_key_info = 'https://platform.openai.com/account/api-keys'
 
 class Chatgpt:
     def __init__(self, api_key):
-        self.validate_api(api_key)
         self.chatbot = Chatbot(api_key)
         logging.info("API key loaded successfully")
 

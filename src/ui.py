@@ -92,7 +92,8 @@ def init_chatbot():
     get_info = cols[2].button("Get key")
     if get_info:
         st.info(f"Get your key at: {openai_key_info}")
-    if True or api_submit: # TODO DELETE
+    if True or api_submit:  # TODO DELETE
+        api_key = Chatgpt.load_api_key('config.json')
         if Chatgpt.validate_api(api_key):
             try:
                 st.session_state['chatbot'] = Chatgpt(api_key)
@@ -117,13 +118,37 @@ def list_section(section_name, section_data):
     item_keys = list(section_data[0].keys())
     item_keys.remove(description_key)
     for item_id, section_item in enumerate(section_data):
+
         cols = st.columns(len(item_keys))
         for col, key in zip(cols, item_keys):
             col.text_input(key, section_item[key], key=f'{section_name}_{item_id}_{key}')
         st.text_area(description_key, section_item[description_key], key=f'{section_name}_{item_id}_{description_key}')
 
         recruiter_subsection(section_name, section_example=section_examples[section_name], item_id=item_id)
+        edit_list_subsection(section_name, section_data, item_id)
+
         st.markdown('***')
+
+
+def edit_list_subsection(section_name, section_data, item_id):
+    with st.container():
+        st.markdown(
+            """<style>
+                .element-container:nth-of-type(1) button {
+                    width: 100%;
+                }
+                </style>""",
+            unsafe_allow_html=True,
+        )
+
+        remove_col, add_col = st.columns(2)
+        if remove_col.button('Delete', key=f'{section_name}_{item_id}_remove_from_list') and len(section_data) > 1:
+            del section_data[item_id]
+            st.experimental_rerun()
+
+        if add_col.button('Add', key=f'{section_name}_{item_id}_add_to_list') and len(section_data) < 10:
+            section_data.append(data_format[section_name][0])
+            st.experimental_rerun()
 
 
 def skills_section(section_name, skills_data):
@@ -135,7 +160,8 @@ def skills_section(section_name, skills_data):
             skill_id = skills_row + item_id
             cols[item_id * 2].text_input(' ', value=skill, key=f'{section_name}_{skill_id}', label_visibility='hidden')
             cols[item_id * 2 + 1].markdown('## ')
-            if cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_from_list'):
+            if cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_from_list') and len(
+                    skills_data) > 0:
                 del skills_data[skill_id]
                 st.experimental_rerun()
 
