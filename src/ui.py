@@ -1,6 +1,7 @@
 import streamlit as st
 
 from src.chatbot.chatgpt import openai_key_info, Chatgpt
+from src.chatbot.prompts import data_format
 from src.data_handler import improve_resume, init_resume, download_pdf, update_resume_data, PDFSizeException
 from src.exceptions import ChatbotInitException
 from src.utils import is_new_file, is_data_loaded, key_to_tab_name, get_item_key, init_user_info
@@ -55,8 +56,14 @@ def upload(uploaded_file):
 def sidebar():
     with st.sidebar:
         uploaded_file = st.file_uploader('Upload PDF Resume', type=["PDF"])
-        if uploaded_file and is_new_file(uploaded_file):
-            upload(uploaded_file)
+        # if uploaded_file and is_new_file(uploaded_file):
+        #     upload(uploaded_file)
+        #     st.experimental_rerun()
+        if is_new_file(uploaded_file):  # TODO Delte
+            resume_data = data_format
+            resume_data['contactInfo']['email'] = "kaki@.cp,"
+            st.session_state['resume_data'] = resume_data
+            st.session_state['file_id'] = uploaded_file.id
             st.experimental_rerun()
 
         if is_data_loaded():
@@ -85,7 +92,7 @@ def init_chatbot():
     get_info = cols[2].button("Get key")
     if get_info:
         st.info(f"Get your key at: {openai_key_info}")
-    if api_submit:
+    if True or api_submit: # TODO DELETE
         if Chatgpt.validate_api(api_key):
             try:
                 st.session_state['chatbot'] = Chatgpt(api_key)
@@ -128,7 +135,7 @@ def skills_section(section_name, skills_data):
             skill_id = skills_row + item_id
             cols[item_id * 2].text_input(' ', value=skill, key=f'{section_name}_{skill_id}', label_visibility='hidden')
             cols[item_id * 2 + 1].markdown('## ')
-            if cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}remove_from_list'):
+            if cols[item_id * 2 + 1].button('x', key=f'{section_name}_{skill_id}_remove_from_list'):
                 del skills_data[skill_id]
                 st.experimental_rerun()
 

@@ -23,7 +23,6 @@ def update_resume_data(text_input, section_name, item_id=0):
         st.session_state['resume_data'][section_key] = text_input
 
 
-@st.cache
 def download_pdf():
     if st.session_state.get('name'):
         resume_data = format_resume_data()
@@ -85,5 +84,4 @@ def format_resume_data():
 
         skills.append(current_state.get(skill_key, ''))
     resume_data['skills'] = skills
-
     return resume_data
